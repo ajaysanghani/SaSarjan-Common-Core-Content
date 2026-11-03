@@ -35,7 +35,13 @@ the change is breaking.
 4. A reviewer approves the `publish` job in the `npm-publish` environment. It publishes with
    provenance and pushes the `vX.Y.Z` git tag.
 5. Check the release on npmjs.com (version, provenance badge, file list), then upgrade the sites
-   ([SEVEN-SITE-ROLLOUT.md](SEVEN-SITE-ROLLOUT.md)).
+   ([SEVEN-SITE-ROLLOUT.md](SEVEN-SITE-ROLLOUT.md)). npm processes a new version before serving it
+   ("Your package is being processed and may take a few minutes to become available"), so
+   `npm view` and the npm website can show the previous version for several minutes after the
+   job succeeds. Check the registry directly if in doubt:
+   ```bash
+   curl -s "https://registry.npmjs.org/@sasarjan%2fweb-core?t=$(date +%s)" | grep -o '"dist-tags":{[^}]*}'
+   ```
 
 Before releasing, you can also check locally:
 
@@ -63,19 +69,42 @@ published by hand.
    `prepublishOnly` runs `pnpm verify` again. npm asks for your 2FA code. Because content is still
    draft, use the `next` tag. On a brand-new package npm may also point `latest` at this first
    version; that is expected.
-3. On npmjs.com, open **@sasarjan/web-core → Settings → Trusted publishing → GitHub Actions** and enter:
+3. On npmjs.com, open **@sasarjan/web-core → Settings → Trusted publishing → GitHub Actions** and enter
+   these values exactly (no `.git`, no URL, no `.github/workflows/` prefix):
    - Organization or user: `ajaysanghani`
    - Repository: `SaSarjan-Common-Core-Content`
    - Workflow filename: `release.yml`
    - Environment: `npm-publish`
-4. Under **Publishing access**, choose **Require two-factor authentication and disallow tokens**.
-5. In GitHub, go to **Settings → Environments → New environment `npm-publish`**. Add required reviewers
-   and limit deployment branches to `main`.
-6. Tag the first release: `git tag v0.1.0 && git push origin v0.1.0`.
-7. Run `npm logout`. Later releases go through the workflow only.
+
+   Tick **Allow npm publish** and save. A new trusted publisher only allows `npm stage publish` by
+   default, and the workflow's `npm publish` then fails with `E403 OIDC permission denied`.
+
+4. In GitHub, go to **Settings → Environments → New environment `npm-publish`**. Add required reviewers
+   (leave **Prevent self-review** off if you are the only reviewer) and limit deployment branches to `main`.
+5. Tag the first release: `git tag v0.1.0 && git push origin v0.1.0`.
+6. Run `npm logout`, then cut the next release through the workflow (see above).
+7. Once a workflow release has succeeded, go to **Settings → Publishing access** on npmjs.com and choose
+   **Require two-factor authentication and disallow tokens**. Doing this last means a misconfigured
+   trusted publisher doesn't leave you unable to publish at all.
+
+Keep the repository public: npm provenance is only supported for public source repositories, and
+the workflow publishes with `--provenance`.
 
 npm's trusted-publishing screens and rules have changed recently. If what you see differs from
 these steps, follow npm's current documentation and update this file.
+
+### When the Release workflow fails
+
+| Error in the job                                                 | Cause and fix                                                                                                                                                                                             |
+| ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `validate`: `@sasarjan/web-core@X.Y.Z is already published`      | The version bump isn't on `main` yet. Merge the `pnpm version-packages` PR, then run the workflow again.                                                                                                  |
+| `publish`: `E404 Not Found - PUT https://registry.npmjs.org/...` | npm found no trusted publisher matching this workflow, then tried the placeholder token `setup-node` writes. Check the five fields in step 3 above against the repository, workflow file and environment. |
+| `publish`: `E403 ... OIDC permission denied for this action`     | The trusted publisher matched but isn't allowed to publish. Tick **Allow npm publish** on it. If it's already ticked, check that **Publishing access** doesn't require a passkey for every publish.       |
+| Job succeeded, but npm still shows the old version               | npm is still processing the upload. Wait a few minutes, or check the registry with the `curl` command above.                                                                                              |
+
+After fixing a setting, open the failed run and use **Re-run jobs → Re-run failed jobs**. The
+`publish` job needs approval again. Nothing is half-published: the git tag is only pushed after
+`npm publish` succeeds.
 
 ## Upgrading a site
 
