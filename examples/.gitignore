@@ -1,0 +1,3 @@
+# Examples install the freshly packed tarball; lockfiles would pin a stale integrity hash.
+*/package-lock.json
+*/next-env.d.ts

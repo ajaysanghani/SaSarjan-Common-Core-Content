@@ -1,0 +1,81 @@
+name: Release
+
+# Publishes the version already committed in package.json. Never runs on push: a maintainer starts
+# it by hand, and the `npm-publish` environment requires a reviewer to approve it before the
+# publish job gets OIDC credentials. See docs/RELEASE.md.
+on:
+  workflow_dispatch:
+    inputs:
+      dist_tag:
+        description: "npm dist-tag. `latest` requires all shared content to be approved."
+        required: true
+        default: next
+        type: choice
+        options: [next, latest]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate release candidate
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Read version and make sure it is not published yet
+        id: version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          if npm view "@sasarjan/web-core@$VERSION" version >/dev/null 2>&1; then
+            echo "::error::@sasarjan/web-core@$VERSION is already published. Run pnpm version-packages first."
+            exit 1
+          fi
+          if [ "${{ inputs.dist_tag }}" = "latest" ] && [[ "$VERSION" == *-* ]]; then
+            echo "::error::Prerelease versions ($VERSION) must use the next dist-tag."
+            exit 1
+          fi
+      - run: pnpm verify
+      - run: pnpm test:examples
+      - name: Draft content gate
+        if: inputs.dist_tag == 'latest'
+        run: pnpm check:drafts
+
+  publish:
+    name: Publish to npm
+    needs: validate
+    runs-on: ubuntu-latest
+    # Configure this environment with required reviewers in the repository settings.
+    environment: npm-publish
+    permissions:
+      contents: write # push the version tag
+      id-token: write # npm trusted publishing (OIDC) and provenance
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      # No NODE_AUTH_TOKEN: npm exchanges the GitHub OIDC token for a short-lived publish credential.
+      - run: npm publish --provenance --access public --tag ${{ inputs.dist_tag }}
+      - name: Tag the release
+        run: |
+          git tag "v${{ needs.validate.outputs.version }}"
+          git push origin "v${{ needs.validate.outputs.version }}"

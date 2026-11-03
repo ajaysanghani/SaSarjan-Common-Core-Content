@@ -26,3 +26,8 @@ desktop.ini
 # Claude Code (personal settings and worktrees)
 .claude/settings.local.json
 .claude/worktrees/
+
+# Packed tarballs used by the example apps
+.pack/
+*.tgz
+coverage/

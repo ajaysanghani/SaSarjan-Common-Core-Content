@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Deliberately aggressive global rules, like the plain-CSS sites have, to prove isolation. */
+a {
+  color: #ff0000;
+}
+h2 {
+  font-size: 3rem;
+}
+ul {
+  list-style: square;
+  padding-left: 3rem;
+}
+
+body {
+  background: #ffffff;
+  color: #111111;
+}

@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+/* Site branding for the shared components: set tokens, never restyle swc- internals. */
+:root {
+  --swc-accent: #1f5f45;
+  --swc-focus: #1f5f45;
+}
+
+.swc-footer {
+  --swc-footer-bg: #12352a;
+  --swc-footer-text: #ffffff;
+  --swc-footer-muted: #d3e2dc;
+  --swc-border: rgb(255 255 255 / 0.2);
+  --swc-focus: #f2c14e;
+}

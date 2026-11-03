@@ -1,0 +1,375 @@
+/*
+ * @sasarjan/web-core shared styles.
+ *
+ * Isolation rules (see docs/ARCHITECTURE.md):
+ * - Every selector starts with a `.swc-` class. No element, :root, html or body selectors.
+ * - No @layer: unlayered site resets (Tailwind v3 preflight, plain global CSS) would beat layered
+ *   rules. Single-class selectors still lose to any site class that targets the same element.
+ * - Text colour and fonts inherit from the site.
+ * - Tokens are `--swc-*` custom properties. Defaults live in each `var()` fallback, never as
+ *   declarations, so a value set on any ancestor (`:root`, `body`, a wrapper, or `.swc-footer`)
+ *   also reaches nested shared components. Example:
+ *     :root { --swc-accent: #2b2d7c; }
+ *     .swc-footer { --swc-footer-bg: #12352a; --swc-footer-text: #fff; --swc-footer-muted: #d3e2dc; }
+ *
+ * Tokens and defaults:
+ *   --swc-text #1c1d21          --swc-muted #4b5060        --swc-accent #8a1f5c
+ *   --swc-accent-text #ffffff   --swc-surface #f6f6f8      --swc-card #ffffff
+ *   --swc-border #dcdde3        --swc-focus #8a1f5c        --swc-radius 12px
+ *   --swc-max-width 72rem       --swc-gutter 1.25rem       --swc-space 1.5rem
+ *   --swc-footer-bg (surface)   --swc-footer-text (text)   --swc-footer-muted (muted)
+ */
+
+.swc-root {
+  font-family: inherit;
+  line-height: 1.6;
+}
+
+.swc-root *,
+.swc-root *::before,
+.swc-root *::after {
+  box-sizing: border-box;
+}
+
+.swc-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Shared link focus treatment */
+.swc-eco__link:focus-visible,
+.swc-footer__link:focus-visible,
+.swc-footer__more:focus-visible,
+.swc-btn:focus-visible {
+  outline: 3px solid var(--swc-focus, #8a1f5c);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------------ EcosystemLinks */
+
+.swc-eco__heading {
+  margin: 0 0 0.75rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: inherit;
+}
+
+.swc-eco__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.swc-eco__item {
+  margin: 0;
+}
+
+.swc-eco__link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.swc-eco__link:hover .swc-eco__name {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.swc-eco__name {
+  font-weight: 600;
+}
+
+.swc-eco__domain {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--swc-muted, #4b5060);
+}
+
+.swc-eco__badge {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0 0.5rem;
+  border-radius: 999px;
+  background: var(--swc-accent, #8a1f5c);
+  color: var(--swc-accent-text, #ffffff);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.6;
+  vertical-align: 0.1em;
+}
+
+.swc-eco__desc {
+  margin: 0.375rem 0 0;
+  font-size: 0.9375rem;
+  color: var(--swc-muted, #4b5060);
+}
+
+.swc-eco--grid .swc-eco__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+  gap: 1rem;
+}
+
+.swc-eco--grid .swc-eco__item {
+  position: relative;
+  padding: 1rem 1.125rem;
+  border: 1px solid var(--swc-border, #dcdde3);
+  border-radius: var(--swc-radius, 12px);
+  background: var(--swc-card, #ffffff);
+}
+
+.swc-eco--grid .swc-eco__item--current {
+  border-color: var(--swc-accent, #8a1f5c);
+}
+
+/* Makes the whole card clickable while keeping a single link in the accessibility tree. */
+.swc-eco--grid .swc-eco__link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.swc-eco--list .swc-eco__list {
+  display: grid;
+  gap: 0.625rem;
+}
+
+.swc-eco--list .swc-eco__domain {
+  display: none;
+}
+
+.swc-eco--inline .swc-eco__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+}
+
+/* ------------------------------------------------------------------ SharedFooter */
+
+.swc-footer {
+  background: var(--swc-footer-bg, var(--swc-surface, #f6f6f8));
+  color: var(--swc-footer-text, var(--swc-text, #1c1d21));
+  font-size: 0.9375rem;
+}
+
+.swc-footer--band {
+  border-top: 1px solid var(--swc-border, #dcdde3);
+}
+
+.swc-footer__inner,
+.swc-footer__bottom {
+  width: 100%;
+  max-width: var(--swc-max-width, 72rem);
+  margin: 0 auto;
+  padding-inline: var(--swc-gutter, 1.25rem);
+}
+
+.swc-footer__inner {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  gap: 2rem var(--swc-space, 1.5rem);
+  padding-block: 2.5rem;
+}
+
+.swc-footer--band .swc-footer__inner {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+  padding-block: 1.5rem;
+}
+
+@media (min-width: 48rem) {
+  .swc-footer--full .swc-footer__about {
+    grid-column: span 2;
+  }
+
+  .swc-footer--band .swc-footer__inner {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    align-items: start;
+  }
+}
+
+.swc-footer__site {
+  margin: 0 0 0.5rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.swc-footer__heading,
+.swc-footer .swc-eco__heading {
+  margin: 0 0 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  color: inherit;
+}
+
+.swc-footer__blurb {
+  margin: 0 0 0.75rem;
+  max-width: 34rem;
+  color: var(--swc-footer-muted, var(--swc-muted, #4b5060));
+}
+
+.swc-footer__list,
+.swc-footer__policies {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.swc-footer__list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.swc-footer__link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.swc-footer__link:hover,
+.swc-footer__more {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.swc-footer__more {
+  color: inherit;
+  font-weight: 600;
+}
+
+.swc-footer .swc-eco__link {
+  color: inherit;
+}
+
+.swc-footer .swc-eco__domain,
+.swc-footer .swc-eco__desc {
+  color: var(--swc-footer-muted, var(--swc-muted, #4b5060));
+}
+
+.swc-footer__bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  padding-block: 1.25rem;
+  border-top: 1px solid var(--swc-border, #dcdde3);
+  font-size: 0.875rem;
+  color: var(--swc-footer-muted, var(--swc-muted, #4b5060));
+}
+
+.swc-footer__copyright {
+  margin: 0;
+}
+
+.swc-footer__policies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+}
+
+/* ------------------------------------------------------------------ SharedPageLayout */
+
+.swc-page {
+  width: 100%;
+  max-width: var(--swc-max-width, 72rem);
+  margin: 0 auto;
+  padding: 3rem var(--swc-gutter, 1.25rem);
+}
+
+.swc-page__header {
+  max-width: 48rem;
+  margin-bottom: 2.5rem;
+}
+
+.swc-page__eyebrow {
+  margin: 0 0 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--swc-accent, #8a1f5c);
+}
+
+.swc-page__title {
+  margin: 0 0 1rem;
+  font-size: clamp(2rem, 1.4rem + 2.5vw, 3rem);
+  font-weight: 800;
+  line-height: 1.15;
+  color: inherit;
+}
+
+.swc-page__intro p {
+  margin: 0 0 1rem;
+  font-size: 1.125rem;
+}
+
+.swc-page__section {
+  margin-bottom: 2.5rem;
+}
+
+.swc-page__section-title {
+  margin: 0 0 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: inherit;
+}
+
+/* Paragraphs keep a readable measure; other content, such as the ecosystem grid, uses the full width. */
+.swc-page__body > p {
+  max-width: 48rem;
+  margin: 0 0 1rem;
+}
+
+.swc-page__body > .swc-eco {
+  margin-top: 1.25rem;
+}
+
+.swc-intro__site {
+  margin-bottom: 2.5rem;
+}
+
+.swc-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.swc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 0.625rem 1.25rem;
+  border: 2px solid var(--swc-accent, #8a1f5c);
+  border-radius: 999px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+}
+
+.swc-btn--primary {
+  background: var(--swc-accent, #8a1f5c);
+  color: var(--swc-accent-text, #ffffff);
+}
+
+.swc-btn--secondary {
+  background: transparent;
+  color: var(--swc-accent, #8a1f5c);
+}
+
+.swc-btn:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

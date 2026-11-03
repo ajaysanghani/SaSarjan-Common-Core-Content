@@ -1,0 +1,11 @@
+dist
+node_modules
+.pack
+pnpm-lock.yaml
+CHANGELOG.md
+examples/*/.next
+examples/*/node_modules
+examples/*/package-lock.json
+examples/*/next-env.d.ts
+tests/react18/node_modules
+tests/react18/package-lock.json
