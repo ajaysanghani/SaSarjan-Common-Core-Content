@@ -1,5 +1,11 @@
 # @sasarjan/web-core
 
+## 0.1.1
+
+### Patch Changes
+
+- Publish through GitHub Actions with provenance; no code changes.
+
 ## 0.1.0
 
 ### Minor Changes
