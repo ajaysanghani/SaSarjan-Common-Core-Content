@@ -4,7 +4,7 @@
 
 ### Patch Changes
 
-- PUblish through github actions with provenance, no code changes
+- Publish through GitHub Actions with provenance; no code changes.
 
 ## 0.1.0
 
