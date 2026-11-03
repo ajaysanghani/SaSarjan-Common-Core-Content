@@ -1,0 +1,24 @@
+{
+  "name": "web-core-example-next-app",
+  "private": true,
+  "description": "Next.js 16 + React 19 + Tailwind v4 consumer of @sasarjan/web-core, installed from the packed tarball (like IT Vidya and Incubator).",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start -p 3101"
+  },
+  "dependencies": {
+    "@sasarjan/web-core": "file:../../.pack/sasarjan-web-core.tgz",
+    "next": "16.4.3",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "tailwindcss": "^4.1.18",
+    "typescript": "~5.9.3"
+  }
+}

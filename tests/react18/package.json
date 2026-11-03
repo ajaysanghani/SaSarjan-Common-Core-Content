@@ -1,0 +1,9 @@
+{
+  "name": "web-core-react18-fixture",
+  "private": true,
+  "description": "React 18.3 install used by `pnpm test:react18` to server-render the components on the React version 10xGrowth uses.",
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  }
+}
