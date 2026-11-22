@@ -16,7 +16,7 @@ src/
   index.ts                 entry "."        components, content, types (no zod)
   config.ts                entry "./config" defineSiteConfig, schemas, draft checks (zod)
   components/              SharedFooter, EcosystemLinks, IntroductionPage, SharedPageLayout, SafeLink
-  content/                 sites.ts, introduction.ts, footer.ts (shared content + default labels)
+  content/                 messaging.ts, sites.ts, introduction.ts, footer.ts (shared content + default labels)
   config/                  types.ts (public types), schema.ts (zod schemas)
   lib/                     url.ts (href allowlist), resolve.ts (defaults, merging)
   styles/shared.css        copied to dist/styles.css → "./styles.css"
@@ -86,15 +86,23 @@ The Next 15 example adds hostile global rules (`a { color: red }`, `h2 { font-si
 
 Content is typed TypeScript data validated by zod schemas in tests and at release:
 
-| Module                    | Holds                                                                    |
-| ------------------------- | ------------------------------------------------------------------------ |
-| `content/sites.ts`        | the seven sites: id, name, domain, canonical URL, blurb                  |
-| `content/introduction.ts` | `/ecosystem` copy: lead, Vision, CoCreation, initiatives                 |
-| `content/footer.ts`       | ecosystem blurb, contact, copyright holder, policy links, default labels |
-| site `site.config.ts`     | per-site config, validated by `defineSiteConfig`                         |
+| Module                    | Holds                                                                                                                                                                           |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `content/messaging.ts`    | messaging hierarchy (vision, mission, approach, participation), common introduction, closing line; written once and referenced by the footer and page modules                   |
+| `content/sites.ts`        | the seven sites: id, name, native name, domain, canonical URL, description, headline, positioning, focus areas, category, icon key, role (`framework` for SaSarjan)             |
+| `content/introduction.ts` | `/ecosystem` copy: 0.1 fields (eyebrow, title, lead, Vision, CoCreation, initiatives) plus the optional 0.2 sections (hero, systems diagram, participation, CoCreator, closing) |
+| `content/footer.ts`       | ecosystem blurb, contact, copyright holder, policy links, brand line, CoCreator block, closing lines, default labels                                                            |
+| site `site.config.ts`     | per-site config, validated by `defineSiteConfig`, including the optional CoCreator destination (`cocreator`)                                                                    |
 
 Every content module has `status: "draft" | "approved"`. `pnpm check:drafts` fails while
 anything is draft, and the release workflow runs it for `latest` releases.
+
+New fields are optional, so content in the 0.1 shape (for example a site's own translated
+`content`) still typechecks and validates. Copy is never repeated across modules: `footer.ts` and
+`introduction.ts` reference the strings in `messaging.ts` (and the brand line references the
+SaSarjan entry in `sites.ts`), so a wording change is made in one place. Labels are not content and
+have no `status`; every visible interface string, including the 0.2 ones, can be overridden through
+`SiteConfig.labels`.
 
 ## Security
 

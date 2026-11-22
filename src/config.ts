@@ -1,20 +1,26 @@
 import { z } from "zod";
 import type { SiteConfig } from "./config/types";
 import {
+  ecosystemMessagingSchema,
   ecosystemSitesSchema,
   footerContentSchema,
   introductionContentSchema,
+  labelsSchema,
   siteConfigSchema,
 } from "./config/schema";
 import { ecosystemSites } from "./content/sites";
 import { introductionContent } from "./content/introduction";
-import { footerContent } from "./content/footer";
+import { defaultLabels, footerContent } from "./content/footer";
+import { ecosystemMessaging } from "./content/messaging";
 
 export {
   siteConfigSchema,
   ecosystemSitesSchema,
   introductionContentSchema,
   footerContentSchema,
+  ecosystemMessagingSchema,
+  labelsSchema,
+  ecosystemIconKeys,
   siteIds,
 } from "./config/schema";
 
@@ -47,6 +53,9 @@ export function findDraftContent(): DraftItem[] {
   for (const site of ecosystemSites) {
     if (site.status === "draft") drafts.push({ path: `ecosystemSites.${site.id}`, label: site.name });
   }
+  if (ecosystemMessaging.status === "draft") {
+    drafts.push({ path: "ecosystemMessaging", label: "Messaging hierarchy and common introduction" });
+  }
   if (introductionContent.status === "draft") {
     drafts.push({ path: "introductionContent", label: introductionContent.title });
   }
@@ -58,6 +67,8 @@ export function findDraftContent(): DraftItem[] {
 /** Validates the content shipped in the package. Throws on the first invalid module. */
 export function validateSharedContent(): void {
   ecosystemSitesSchema.parse(ecosystemSites);
+  ecosystemMessagingSchema.parse(ecosystemMessaging);
   introductionContentSchema.parse(introductionContent);
   footerContentSchema.parse(footerContent);
+  labelsSchema.parse(defaultLabels);
 }

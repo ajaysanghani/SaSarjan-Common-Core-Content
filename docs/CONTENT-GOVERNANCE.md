@@ -41,6 +41,7 @@ To change content:
 
 | Content                                        | File                          | Owner (to confirm)           |
 | ---------------------------------------------- | ----------------------------- | ---------------------------- |
+| Messaging hierarchy, common introduction       | `src/content/messaging.ts`    | SaSarjan                     |
 | Ecosystem directory: names, URLs, descriptions | `src/content/sites.ts`        | each site's owner + SaSarjan |
 | `/ecosystem` copy                              | `src/content/introduction.ts` | SaSarjan                     |
 | Footer blurb, contact, copyright, policies     | `src/content/footer.ts`       | SaSarjan + legal             |
@@ -51,28 +52,42 @@ there once they are named.
 
 ## Sources of the current drafts
 
-Nothing was invented. Each draft was condensed from existing published copy:
+Nothing was invented. Since v0.2 most copy comes from the content brief
+([prompts/content-brief.md](../prompts/content-brief.md)); a few short lines the brief asked for were
+written for the package and are marked `// Written for the package.` in the source.
 
-| Item                                            | Source                                                                                                                                                               |
-| ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| SaSarjan description, intro, Vision, CoCreation | SaSarjan `src/config/site.ts` tagline and hero, `layout.tsx` description, FAQ                                                                                        |
-| TalentExcel description                         | TalentExcel `app/layout.tsx` metadata                                                                                                                                |
-| 10xGrowth description                           | 10xGrowth `layout.tsx` metadata (headline numbers left out)                                                                                                          |
-| SevaPremi description                           | SevaPremi `packages/i18n/messages/en.json` `footer.description`                                                                                                      |
-| Nanha Sitara description                        | Nanha Sitara `app/layout.tsx` title and description                                                                                                                  |
-| IT Vidya description                            | IT Vidya `src/content/site.ts` statement                                                                                                                             |
-| Incubator.in description                        | Incubator `apps/web/app/layout.tsx` description                                                                                                                      |
-| Footer ecosystem blurb                          | 10xGrowth `@platform/ui` Footer                                                                                                                                      |
-| Canonical URLs                                  | sevapremi: `www.` (repo canonical); 10xgrowth, itvidya, sasarjan: bare domain (repo config); talentexcel, nanhasitara, incubator: **not found, assumed bare domain** |
+| Item                                                                                      | Source                                                                                                                                                                                        |
+| ----------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Messaging hierarchy, common introduction, closing line (`messaging.ts`)                   | Content brief, "Messaging hierarchy" and decision D3                                                                                                                                          |
+| All seven sites: headline, positioning, focus areas, native name                          | Content brief, "The seven initiatives"                                                                                                                                                        |
+| All seven sites: description                                                              | First sentence of the brief's positioning (replaces the 0.1 descriptions condensed from each site's metadata)                                                                                 |
+| All seven sites: category                                                                 | Content brief, proposed categories (decision D5)                                                                                                                                              |
+| `/ecosystem` sections 1–8 (`introduction.ts`)                                             | Content brief, "`/ecosystem` page copy"                                                                                                                                                       |
+| `/ecosystem` systems connection line                                                      | Content brief, **proposed, needs sign-off**                                                                                                                                                   |
+| `/ecosystem` participant one-liners, CoCreation and initiatives paragraphs, list headings | **Written for the package** (the brief asks for them); see the source comments                                                                                                                |
+| `introductionContent.eyebrow`                                                             | Unchanged from 0.1                                                                                                                                                                            |
+| Footer brand line, CoCreator block, closing                                               | Content brief, "Footer copy"                                                                                                                                                                  |
+| Footer ecosystem blurb (0.1 layout)                                                       | 10xGrowth `@platform/ui` Footer                                                                                                                                                               |
+| New labels                                                                                | Content brief ("Explore website", "Become a CoCreator", "Explore Our Initiatives", "Explore the SaSarjan Ecosystem"); "Focus areas" and "Overarching framework" written for the package       |
+| Canonical URLs                                                                            | Unchanged (decision D2). sevapremi: `www.` (repo canonical); 10xgrowth, itvidya, sasarjan: bare domain (repo config); talentexcel, nanhasitara, incubator: **not found, assumed bare domain** |
 
 ## Open decisions
 
-These must be settled before the first `latest` release:
+Decisions D1–D7 in the [content brief](../prompts/content-brief.md) settled the display names (D1:
+keep the current names), canonical URLs (D2: keep the current ones), the closing line (D3), the
+approver (D4: the repository owner), the categories (D5: proposed, draft), the CoCreator destination
+(D6: none yet, so the CTA is hidden) and shipping draft copy on `next` (D7).
 
-1. **Canonical URL per site**, www or bare. Confirmed in repos for SevaPremi, 10xGrowth, IT Vidya and
-   SaSarjan. Unconfirmed for TalentExcel, Nanha Sitara and Incubator.in.
-2. **Display names and descriptions.** For example, is SaSarjan listed as "SaSarjan" or as its provisional
-   name "CoCreate India's Future"?
+These must still be settled before the first `latest` release:
+
+1. **Canonical URL per site.** D2 keeps the current URLs, but TalentExcel, Nanha Sitara and
+   Incubator.in were never confirmed in their repos (bare domain assumed).
+2. **Copy sign-off.** The repository owner (D4) approves everything in `messaging.ts`, `sites.ts`,
+   `introduction.ts` and `footer.ts`, in particular:
+   - the proposed initiative categories (D5);
+   - the systems connection line ("The two meet where district-level systems work and block-level
+     community action overlap."), marked as needing sign-off in the brief;
+   - the lines written for the package, marked `// Written for the package.` in the source.
 3. **Shared contact email.** `info@sasarjan.com` appears in the SaSarjan config but is not yet
    approved for ecosystem-wide use (`footerContent.contactEmail` is `null`).
 4. **Copyright holder.** The legal entity name. Until then, each site's own name is used.
@@ -81,8 +96,9 @@ These must be settled before the first `latest` release:
    rights reserved" for `src/content/`)? Decide, and update `LICENSE` and the README if it is
    reserved.
 7. **Translations.** Who supplies and approves Hindi or other copy (SevaPremi already serves Hindi).
-8. **Ecosystem copy.** Sign-off on the Vision, CoCreation and initiatives text in
-   `src/content/introduction.ts`.
+   Every new field and label can be overridden per site, so this doesn't block the package.
+8. **CoCreator destination (D6).** None exists yet. Each site turns the CTA on by setting
+   `cocreator` in its `site.config.ts` once a real destination is agreed. Never invent one.
 
 ## Adding a site
 

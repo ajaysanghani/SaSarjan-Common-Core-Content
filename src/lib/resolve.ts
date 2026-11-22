@@ -8,15 +8,25 @@ export function cx(...classes: Array<string | false | null | undefined>): string
   return classes.filter(Boolean).join(" ");
 }
 
-export function resolveLabels(site?: Pick<SiteConfig, "labels">, overrides?: Partial<Labels>): Labels {
-  return { ...defaultLabels, ...site?.labels, ...overrides };
+export function resolveLabels(
+  site?: Pick<SiteConfig, "labels">,
+  overrides?: Partial<Labels>,
+): Required<Labels> {
+  return { ...defaultLabels, ...definedOnly(site?.labels), ...definedOnly(overrides) };
+}
+
+/** Drops keys explicitly set to `undefined`, so they don't erase a default when spread. */
+function definedOnly<T extends object>(values: T | undefined): Partial<T> {
+  return Object.fromEntries(
+    Object.entries(values ?? {}).filter(([, value]) => value !== undefined),
+  ) as Partial<T>;
 }
 
 export function resolveSiteName(site: SiteConfig): string {
   return site.siteName ?? getEcosystemSite(site.siteId)?.name ?? site.siteId;
 }
 
-/** Applies name/description overrides and drops the current site when configured to. */
+/** Applies text overrides (e.g. translations) and drops the current site when configured to. */
 export function resolveSites(options: {
   sites?: readonly EcosystemSite[];
   currentSiteId?: SiteId;
