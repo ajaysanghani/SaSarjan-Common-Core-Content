@@ -14,13 +14,21 @@ export { SafeLink, type SafeLinkProps } from "./components/SafeLink";
 export { ecosystemSites, getEcosystemSite } from "./content/sites";
 export { introductionContent } from "./content/introduction";
 export { footerContent, defaultLabels } from "./content/footer";
+export { ecosystemMessaging } from "./content/messaging";
 export { classifyHref, isSafeHref, type HrefKind } from "./lib/url";
 
 export type {
+  CoCreatorLink,
+  CoCreatorSection,
+  ContentItem,
   ContentStatus,
   ContentSection,
   Cta,
+  EcosystemIconKey,
+  EcosystemMessaging,
+  EcosystemRole,
   EcosystemSite,
+  EcosystemSiteOverride,
   FooterContent,
   FooterSections,
   FooterVariant,
@@ -32,4 +40,6 @@ export type {
   LinkItem,
   SiteConfig,
   SiteId,
+  SystemsSection,
+  SystemsTier,
 } from "./config/types";

@@ -86,7 +86,7 @@ last. Each site is a separate PR in its own repo, reviewed on its Vercel preview
   ```
 - Use the `content` prop of `IntroductionPage` for a Hindi version of the copy once one is approved.
 - `.nvmrc` pins Node 20.18.1. Move to 22 or 24 (Vercel deprecated Node 20 on 2026-10-01).
-- The local repo's only git remote is named `old` (`sevapremi-old.git`). Confirm which repository Vercel deploys before opening the PR.
+- The repository is `ajaysanghani/SevaPremi`, not `sevapremi-old`. The local checkout's only remote is named `old` (`sevapremi-old.git`); open the PR against `ajaysanghani/SevaPremi`.
 
 ### 7. 10xGrowth: last
 

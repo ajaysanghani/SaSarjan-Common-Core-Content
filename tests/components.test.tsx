@@ -1,8 +1,15 @@
 import type { ReactNode } from "react";
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { EcosystemLinks, IntroductionPage, SafeLink, SharedFooter, SharedPageLayout } from "../src";
-import type { SiteConfig } from "../src";
+import {
+  EcosystemLinks,
+  IntroductionPage,
+  SafeLink,
+  SharedFooter,
+  SharedPageLayout,
+  introductionContent,
+} from "../src";
+import type { IntroductionContent, SiteConfig } from "../src";
 
 const talentexcel: SiteConfig = { siteId: "talentexcel" };
 
@@ -178,10 +185,30 @@ describe("IntroductionPage", () => {
   it("renders one h1, the vision, CoCreation and initiatives sections, and the directory", () => {
     render(<IntroductionPage site={{ siteId: "nanhasitara" }} />);
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
-    expect(screen.getByRole("region", { name: "Vision: Collective Prosperity" })).toBeInTheDocument();
-    expect(screen.getByRole("region", { name: "CoCreation" })).toBeInTheDocument();
-    const initiatives = screen.getByRole("region", { name: "Ecosystem initiatives" });
-    expect(within(initiatives).getAllByRole("listitem")).toHaveLength(7);
+    const { vision, cocreation, initiatives } = introductionContent;
+    expect(screen.getByRole("region", { name: vision.title })).toBeInTheDocument();
+    expect(screen.getByRole("region", { name: cocreation.title })).toBeInTheDocument();
+    const region = screen.getByRole("region", { name: initiatives.title });
+    expect(within(region).getAllByRole("listitem")).toHaveLength(7);
+  });
+
+  it("still accepts and renders content in the 0.1 shape", () => {
+    // No hero, systems, participation, cocreator, closing or items: the 0.1 shape must typecheck.
+    const oldShape = {
+      status: "draft",
+      eyebrow: "पारिस्थितिकी तंत्र",
+      title: "साथ मिलकर",
+      lead: ["पहला अनुच्छेद।"],
+      vision: { id: "vision", title: "दृष्टि", paragraphs: ["सामूहिक समृद्धि।"] },
+      cocreation: { id: "cocreation", title: "सह-सृजन", paragraphs: [] },
+      initiatives: { id: "initiatives", title: "पहल", paragraphs: [] },
+    } satisfies IntroductionContent;
+
+    render(<IntroductionPage site={{ siteId: "sevapremi" }} content={oldShape} />);
+    expect(screen.getByRole("heading", { level: 1, name: "साथ मिलकर" })).toBeInTheDocument();
+    expect(screen.getByRole("region", { name: "दृष्टि" })).toBeInTheDocument();
+    expect(screen.getByRole("region", { name: "सह-सृजन" })).toBeInTheDocument();
+    expect(within(screen.getByRole("region", { name: "पहल" })).getAllByRole("listitem")).toHaveLength(7);
   });
 
   it("renders configured CTAs and site-specific children", () => {

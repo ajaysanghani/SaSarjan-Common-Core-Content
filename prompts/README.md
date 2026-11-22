@@ -15,7 +15,8 @@ This folder is not published to npm (`package.json` `files` covers only `dist`, 
 2. **Housekeeping in the site repos:**
    - Incubator: local `main` is one commit behind `origin/main`. Run `git pull`.
    - 10xGrowth: checked out on `homepage-hero-rewrite`. The site prompt branches from `main`.
-   - SevaPremi: the only remote is `old` (`sevapremi-old.git`). Confirm which repo Vercel deploys.
+   - SevaPremi: the repository is `ajaysanghani/SevaPremi`, not `sevapremi-old`. The local checkout's
+     only remote is `old` (`sevapremi-old.git`); add `ajaysanghani/SevaPremi` as `origin` before starting.
 
 ## Order
 

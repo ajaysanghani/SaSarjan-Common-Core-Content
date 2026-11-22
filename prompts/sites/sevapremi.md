@@ -1,8 +1,8 @@
 # Site prompt: SevaPremi (first integration)
 
-Run in: `C:\Users\ajay\OneDrive\Desktop\Happy-Coder\SevaPremi`. Before starting: the only git remote
-is `old` (`sevapremi-old.git`). Confirm which repository Vercel deploys and set the remote yourself;
-don't leave it to Claude.
+Run in: `C:\Users\ajay\OneDrive\Desktop\Happy-Coder\SevaPremi`. Before starting: the repository is
+`ajaysanghani/SevaPremi`, not `sevapremi-old`. The local checkout's only remote is `old`
+(`sevapremi-old.git`), so add `ajaysanghani/SevaPremi` as `origin` yourself; don't leave it to Claude.
 
 ---
 
