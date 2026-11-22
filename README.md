@@ -82,9 +82,41 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 There are two footer variants:
 
-- **`variant="full"`** (default) is a complete `<footer>` landmark containing the site name, ecosystem blurb,
-  your link groups, the ecosystem directory, contact details (when configured), copyright and policy links.
-- **`variant="band"`** is an ecosystem `<section>` to put inside or next to a footer the site already has.
+- **`variant="full"`** (default) is a complete `<footer>` landmark for a site without a footer of
+  its own. It shows the brand line (SaSarjan | स सर्जन), the common introduction, "Explore the
+  SaSarjan Ecosystem" with all seven initiatives (icon, name, headline; your site marked "You are
+  here"), the CoCreator block (only with a `cocreator` destination), your site name and link groups,
+  contact details (when configured), the closing lines, copyright and policy links.
+- **`variant="band"`** is a compact ecosystem `<section>` to put inside or next to a footer the
+  site already has: the brand line and tagline, the seven-initiative directory, the CoCreator button
+  (only with a destination) and one closing line.
+
+Every block can be turned off in `site.config.ts` under `footer.sections`:
+
+| Key              | Block                                                 | Default                                  |
+| ---------------- | ----------------------------------------------------- | ---------------------------------------- |
+| `brand`          | Brand line                                            | on                                       |
+| `tagline`        | "CoCreating the Future, Together." and the mission    | same as `ecosystemIntro`                 |
+| `introduction`   | The rest of the common introduction                   | `full`: as `ecosystemIntro`; `band`: off |
+| `ecosystemIntro` | Site name (`full`) and the "About the ecosystem" link | on                                       |
+| `ecosystemLinks` | Seven-initiative directory                            | on                                       |
+| `cocreator`      | "Become a CoCreator" block (needs `cocreator.href`)   | on                                       |
+| `siteLinks`      | Your link groups (`full`)                             | on                                       |
+| `contact`        | Contact email (`full`)                                | on                                       |
+| `policies`       | Policy links (`full`)                                 | on                                       |
+| `closing`        | Closing lines (two in `full`, one in `band`)          | on                                       |
+
+**Condensed footer.** Pages that already show the tagline and introduction, such as `/ecosystem`,
+should render `<SharedFooter condensed />`. It drops the tagline, the introduction and the "About
+the ecosystem" link, so the tagline appears at most twice on the page. In the App Router, render the
+footer from route layouts rather than the root layout so `/ecosystem` can pass the prop:
+
+```tsx
+// app/(site)/layout.tsx           → <SharedFooter site={site} linkComponent={Link} />
+// app/ecosystem/layout.tsx        → <SharedFooter site={site} linkComponent={Link} condensed />
+```
+
+`examples/next-app` is set up this way.
 
 ### 3. Add the `/ecosystem` page
 
@@ -115,7 +147,8 @@ export default function EcosystemPage() {
 | Export             | What it renders                                                             |
 | ------------------ | --------------------------------------------------------------------------- |
 | `SharedFooter`     | `full` footer landmark or `band` ecosystem section                          |
-| `EcosystemLinks`   | `<nav>` directory of the seven sites: `grid`, `list` or `inline` layout     |
+| `EcosystemLinks`   | `<nav>` of the seven sites: `grid`, `list`, `inline` or `directory` layout  |
+| `EcosystemIcon`    | An initiative's decorative inline SVG icon (`icon` key from the directory)  |
 | `IntroductionPage` | `/ecosystem` page body: vision, CoCreation, initiatives, CTAs, your content |
 | `SharedPageLayout` | Optional title, intro, sections and CTA scaffold                            |
 | `SafeLink`         | A link that renders only allowlisted hrefs                                  |
@@ -146,6 +179,34 @@ colour inherit from the site. Brand it with tokens:
 ```
 
 The full token list is at the top of [`src/styles/shared.css`](src/styles/shared.css).
+
+The footer's directory, icons, badge and CoCreator button take their colours from the footer text
+by default, so they keep their contrast on light and dark footers without extra tokens. Tokens added
+in 0.2, all optional:
+
+| Token                                                                     | Used for                                                   | Default                                    |
+| ------------------------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------ |
+| `--swc-hover-bg`                                                          | Directory hover and current-site background                | `rgb(127 127 127 / .1)`                    |
+| `--swc-icon-bg`, `--swc-icon-color`                                       | Initiative icon tile and stroke                            | `rgb(127 127 127 / .14)`, text colour      |
+| `--swc-badge-bg`, `--swc-badge-text`                                      | "You are here" badge in the directory                      | transparent, text colour                   |
+| `--swc-footer-focus`                                                      | Focus outline inside the footer                            | `--swc-focus` if set, else the text colour |
+| `--swc-footer-card-bg`                                                    | CoCreator block background                                 | `rgb(127 127 127 / .06)`                   |
+| `--swc-footer-cta-bg`, `--swc-footer-cta-text`, `--swc-footer-cta-border` | "Become a CoCreator" button (an outline button by default) | transparent, text colour, text colour      |
+
+For a dark footer, set the footer tokens on `.swc-footer`. If you set `--swc-focus` on `:root` for
+your light pages, also set `--swc-footer-focus` there so focus stays visible:
+
+```css
+.swc-footer {
+  --swc-footer-bg: transparent; /* inside your own dark footer */
+  --swc-footer-text: #fff;
+  --swc-footer-muted: rgb(255 255 255 / 0.75);
+  --swc-border: rgb(255 255 255 / 0.15);
+  --swc-footer-focus: #fff;
+}
+```
+
+Light and dark come only from these tokens; the stylesheet has no `prefers-color-scheme` rules.
 
 ## Translation
 

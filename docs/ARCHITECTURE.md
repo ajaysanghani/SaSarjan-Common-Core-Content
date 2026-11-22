@@ -120,8 +120,16 @@ have no `status`; every visible interface string, including the 0.2 ones, can be
 - Landmarks: the `full` footer is a `<footer>` (contentinfo), and `band` is a labelled `<section>`, which
   avoids a second contentinfo. Directories and link groups are labelled `<nav>` elements.
 - The current site is marked `aria-current="true"` with a visible "You are here" badge.
+- Initiative icons are inline SVGs with `aria-hidden="true"` and `focusable="false"`; the name is always
+  next to them. The brand line marks the Devanagari name with `lang="hi"`.
+- The footer's CoCreator block is a plain `<div>` with an `<h2>`, not a `<section>`, so `full` has exactly
+  one landmark of its own (contentinfo) and `band` one (region), plus labelled `<nav>`s.
 - `IntroductionPage` and `SharedPageLayout` render one `<h1>`, and each section is labelled by its `<h2>`.
 - Links have visible focus outlines (`--swc-focus`) and buttons have a 44px minimum height. Layouts reflow down to 320px with no
   horizontal scroll (checked at 375px).
 - Default colours meet WCAG AA contrast on white: text #1c1d21, muted #4b5060, accent #8a1f5c.
   If you override tokens, check your own contrast.
+- Inside the footer, the directory hover, icon tile, badge, CoCreator button and focus outline
+  derive from the footer text colour (`currentColor` and translucent greys), so a site that sets only
+  the footer text, muted and background tokens for a dark footer keeps the same contrast. There are no
+  `prefers-color-scheme` rules: light and dark come from the host's tokens.

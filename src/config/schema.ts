@@ -127,6 +127,11 @@ export const siteConfigSchema: z.ZodType<SiteConfig> = z.strictObject({
           siteLinks: z.boolean().optional(),
           contact: z.boolean().optional(),
           policies: z.boolean().optional(),
+          brand: z.boolean().optional(),
+          tagline: z.boolean().optional(),
+          introduction: z.boolean().optional(),
+          cocreator: z.boolean().optional(),
+          closing: z.boolean().optional(),
         })
         .optional(),
       siteLinks: z.array(linkGroup).optional(),

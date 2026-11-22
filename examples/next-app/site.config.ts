@@ -3,6 +3,9 @@ import { defineSiteConfig } from "@sasarjan/web-core/config";
 // Validated at build time: an invalid value fails `next build` with a readable message.
 export const site = defineSiteConfig({
   siteId: "itvidya",
+  // Example destination only, to show the CoCreator block. Real sites leave this unset until a
+  // destination is decided (content brief, D6), which hides the call to action.
+  cocreator: { href: "/ecosystem" },
   footer: {
     siteLinks: [
       {

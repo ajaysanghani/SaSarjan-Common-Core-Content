@@ -1,5 +1,6 @@
 import type { EcosystemSite, Labels, SiteConfig, SiteId } from "../config/types";
 import { cx, resolveLabels, resolveSites } from "../lib/resolve";
+import { EcosystemIcon } from "./EcosystemIcon";
 import { SafeLink } from "./SafeLink";
 
 export interface EcosystemLinksProps {
@@ -10,8 +11,12 @@ export interface EcosystemLinksProps {
   /** Defaults to the shared directory. */
   sites?: readonly EcosystemSite[];
   includeCurrentSite?: boolean;
-  layout?: "grid" | "list" | "inline";
-  /** Defaults to true, except for the inline layout. */
+  /**
+   * `grid` cards, a plain `list`, `inline` names, or `directory`: a compact list of each
+   * initiative's icon, name and headline, as used by the footer.
+   */
+  layout?: "grid" | "list" | "inline" | "directory";
+  /** Defaults to true for `grid` and `list`. The `directory` layout shows headlines instead. */
   showDescriptions?: boolean;
   /** Visible heading above the list. Omit for none; the nav is still labelled for screen readers. */
   heading?: string;
@@ -27,7 +32,7 @@ export function EcosystemLinks({
   sites,
   includeCurrentSite = site?.ecosystem?.includeCurrentSite ?? true,
   layout = "grid",
-  showDescriptions = layout !== "inline",
+  showDescriptions = layout === "grid" || layout === "list",
   heading,
   headingLevel = 2,
   openInNewTab = site?.ecosystem?.openInNewTab ?? false,
@@ -52,6 +57,30 @@ export function EcosystemLinks({
       <ul className="swc-eco__list">
         {items.map((item) => {
           const isCurrent = item.id === currentSiteId;
+          if (layout === "directory") {
+            return (
+              <li key={item.id} className={cx("swc-eco__item", isCurrent && "swc-eco__item--current")}>
+                <SafeLink
+                  href={item.url}
+                  className="swc-eco__link"
+                  newTab={openInNewTab && !isCurrent}
+                  newTabLabel={labels.opensInNewTab}
+                  ariaCurrent={isCurrent ? "true" : undefined}
+                >
+                  {item.icon ? (
+                    <span className="swc-eco__icon">
+                      <EcosystemIcon icon={item.icon} />
+                    </span>
+                  ) : null}
+                  <span className="swc-eco__text">
+                    <span className="swc-eco__name">{item.name}</span>
+                    {isCurrent ? <span className="swc-eco__badge">{labels.currentSite}</span> : null}
+                    <span className="swc-eco__headline">{item.headline ?? item.description}</span>
+                  </span>
+                </SafeLink>
+              </li>
+            );
+          }
           return (
             <li key={item.id} className={cx("swc-eco__item", isCurrent && "swc-eco__item--current")}>
               <SafeLink

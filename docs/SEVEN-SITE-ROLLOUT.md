@@ -61,6 +61,8 @@ last. Each site is a separate PR in its own repo, reviewed on its Vercel preview
 - Tailwind 4, Next 16.4. Supports a static export (`output: "export"`). The components are static-export-safe.
 - The footer is dark (`bg-forest-deep`). Place `band` inside it and set
   `--swc-footer-bg: transparent; --swc-footer-text: #fff; --swc-footer-muted: rgb(255 255 255 / .75); --swc-border: rgb(255 255 255 / .15)` on `.swc-footer`.
+  If the site sets `--swc-focus` on `:root`, also set `--swc-footer-focus: #fff` there. `examples/next-app` shows this
+  set on a band inside a `#133530` footer.
 - The page can pass `next/link` as `linkComponent`.
 
 ### 5. SaSarjan
