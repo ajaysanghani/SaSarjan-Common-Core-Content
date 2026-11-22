@@ -9,9 +9,9 @@ This folder is not published to npm (`package.json` `files` covers only `dist`, 
 
 ## Before you start
 
-1. **Fill in the decisions table** at the top of [content-brief.md](content-brief.md), especially D6
-   (each site's "Become a CoCreator" destination) and D7 (whether site PRs can merge before the copy is
-   approved). Blank lines fall back to the defaults shown.
+1. **Decisions are settled** in the table at the top of [content-brief.md](content-brief.md). In
+   short: no CoCreator destination yet (the CTA stays hidden), and site PRs may merge and go live on
+   0.2.0 while the copy is still draft.
 2. **Housekeeping in the site repos:**
    - Incubator: local `main` is one commit behind `origin/main`. Run `git pull`.
    - 10xGrowth: checked out on `homepage-hero-rewrite`. The site prompt branches from `main`.

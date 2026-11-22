@@ -23,7 +23,7 @@ Do:
 1. From the repo root: `pnpm add -E @sasarjan/web-core@<version> --filter @incubator/web`. Commit
    `pnpm-lock.yaml`.
 2. Keep the consent statement exactly as it is, above the shared footer.
-3. Set the CoCreator destination (D6), switch `/ecosystem` metadata to `introductionMetadata`, and use
-   the condensed footer there.
+3. Leave the CoCreator destination unset (D6: none yet), switch `/ecosystem` metadata to
+   `introductionMetadata`, and use the condensed footer there.
 4. Check that canonicals use `NEXT_PUBLIC_SITE_URL` (don't change Vercel env yourself).
 5. Run the repo's Playwright e2e tests if they cover the footer or `/ecosystem`.

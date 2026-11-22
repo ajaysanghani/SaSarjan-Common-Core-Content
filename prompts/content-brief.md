@@ -6,31 +6,17 @@ should restate it. When the copy changes, change it here first, then in `src/con
 All of this copy enters the package as `status: "draft"`. Only the content owner flips it to
 `approved` (see [docs/CONTENT-GOVERNANCE.md](../docs/CONTENT-GOVERNANCE.md)).
 
-## Decisions (fill in before running prompt 01)
+## Decisions (settled 2026-11-22)
 
-Claude applies the default shown when a line is left as-is.
-
-| #   | Decision                                                                                           | Your answer | Default if unanswered                                                                                                                             |
-| --- | -------------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| D1  | Display names: "NanhaSitara" / "ITVidya" or "Nanha Sitara" / "IT Vidya"?                           |             | Keep the current package names ("Nanha Sitara", "IT Vidya"), which match each site's own metadata                                                 |
-| D2  | Canonical URLs                                                                                     |             | Keep the current canonical URLs in `src/content/sites.ts` (SevaPremi stays `https://www.sevapremi.com`); the bare URLs below are for display only |
-| D3  | Closing line: "SaSarjan – CoCreating Collective Prosperity." or "SaSarjan – CoCreating Together."? |             | "SaSarjan – CoCreating Collective Prosperity." on both the footer and the page                                                                    |
-| D4  | Content approver (name or GitHub handle)                                                           |             | Repository owner                                                                                                                                  |
-| D5  | Initiative categories (used on page cards)                                                         |             | The proposed categories in the table below, marked draft                                                                                          |
-| D6  | "Become a CoCreator" destination per site                                                          |             | None. The CTA is hidden on any site that doesn't configure one. Never invent a URL                                                                |
-| D7  | May site PRs merge to production while copy is still draft?                                        |             | No. Site PRs stay open on their Vercel preview until go-live (prompt `05`)                                                                        |
-
-D6 answers, per site (site-relative path or absolute `https:` URL):
-
-| Site         | CoCreator destination |
-| ------------ | --------------------- |
-| SaSarjan     |                       |
-| TalentExcel  |                       |
-| 10xGrowth    |                       |
-| SevaPremi    |                       |
-| IT Vidya     |                       |
-| Incubator.in |                       |
-| Nanha Sitara |                       |
+| #   | Decision                            | Answer                                                                                                                                                                             |
+| --- | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| D1  | Display names                       | Keep the current package names ("Nanha Sitara", "IT Vidya"), which match each site's own metadata                                                                                  |
+| D2  | Canonical URLs                      | Keep the current canonical URLs in `src/content/sites.ts` (SevaPremi stays `https://www.sevapremi.com`); the bare URLs below are for display only                                  |
+| D3  | Closing line                        | "SaSarjan – CoCreating Collective Prosperity." on both the footer and the page                                                                                                     |
+| D4  | Content approver                    | Repository owner                                                                                                                                                                   |
+| D5  | Initiative categories               | The proposed categories in the table below, marked draft                                                                                                                           |
+| D6  | "Become a CoCreator" destination    | None configured yet, so the CTA is hidden on every site. Never invent a URL. To turn it on later, set the site's CoCreator destination in its `site.config.ts`                     |
+| D7  | Merge site PRs while copy is draft? | **Yes.** Site PRs may merge and go live on the `next` release (0.2.0) after their Vercel preview is reviewed. Prompt `05` later approves the copy and moves every site to `latest` |
 
 ## Messaging hierarchy
 

@@ -9,8 +9,9 @@ Each per-site prompt in this folder tells Claude to read this file first. The pa
 2. `CORE\docs\VERCEL-INTEGRATION.md`: install and lockfile rules.
 3. `CORE\README.md` and `CORE\CHANGELOG.md`: the current API, especially the new `0.2.0` options
    (CoCreator destination, footer sections, condensed footer, `introductionMetadata`).
-4. `CORE\prompts\content-brief.md`: decisions D6 (this site's CoCreator destination) and D7 (whether
-   this PR may merge before the copy is approved).
+4. `CORE\prompts\content-brief.md`: the decisions table. D6: no CoCreator destination is set yet,
+   so leave it unset and the CTA stays hidden. D7: this PR may go live on 0.2.0 before the copy is
+   approved, so it must be production-ready, not a throwaway preview.
 5. This site's own `CLAUDE.md`, if it has one. It wins over these rules on anything site-specific.
 
 The site prompts use the names the package prompts asked for (`introductionMetadata`, "the

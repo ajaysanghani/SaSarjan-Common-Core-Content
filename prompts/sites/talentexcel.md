@@ -22,7 +22,7 @@ What exists today (on `main`):
 Do:
 
 1. `npm install -E @sasarjan/web-core@<version>` and commit `package-lock.json`.
-2. Set the CoCreator destination from the brief's D6 (hide it if blank).
+2. Leave the CoCreator destination unset (D6: none yet); confirm the CTA is hidden.
 3. Switch `/ecosystem` metadata to `introductionMetadata`; keep the canonical.
 4. Use the condensed footer on `/ecosystem` (`PublicShell` may need a prop for that).
 5. Recheck the `max-w-5xl` shell and zeroed gutter against the new sections; adjust if the page now
