@@ -1,7 +1,20 @@
-import type { IntroductionContent } from "../config/types";
+import type { IntroductionContent, IntroductionMetadata } from "../config/types";
 import { ecosystemMessaging } from "./messaging";
 
 const { hierarchy, introduction, closingLine } = ecosystemMessaging;
+
+/**
+ * Title and description for the `/ecosystem` page's metadata, as plain data with no `next` import:
+ * `export const metadata = { ...introductionMetadata, alternates: { canonical: "/ecosystem" } }`.
+ *
+ * DRAFT: requires approval. Proposed in the v0.2 content brief; needs explicit sign-off. Covered by
+ * `introductionContent.status`, which carries it as `seo`.
+ */
+export const introductionMetadata: IntroductionMetadata = {
+  title: "The SaSarjan Ecosystem: CoCreating the Future, Together",
+  description:
+    "Seven interconnected initiatives uniting youth, professionals, experts, entrepreneurs, institutions, communities, funders and AI to advance Collective Prosperity.",
+};
 
 /**
  * Copy for the shared /ecosystem page.
@@ -110,6 +123,8 @@ export const introductionContent: IntroductionContent = {
       { siteId: "itvidya", text: "Enables lifelong learning" },
       { siteId: "nanhasitara", text: "Supports the development of children" },
     ],
+    // Written for the package.
+    supportingTitle: "Five initiatives that strengthen both",
   },
 
   // DRAFT: requires approval. 6. Participation philosophy.
@@ -169,4 +184,7 @@ export const introductionContent: IntroductionContent = {
     id: "swc-closing",
     lines: [hierarchy.approach, hierarchy.mission, closingLine],
   },
+
+  // DRAFT: requires approval. SEO copy, proposed in the brief.
+  seo: introductionMetadata,
 };

@@ -86,13 +86,13 @@ The Next 15 example adds hostile global rules (`a { color: red }`, `h2 { font-si
 
 Content is typed TypeScript data validated by zod schemas in tests and at release:
 
-| Module                    | Holds                                                                                                                                                                           |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `content/messaging.ts`    | messaging hierarchy (vision, mission, approach, participation), common introduction, closing line; written once and referenced by the footer and page modules                   |
-| `content/sites.ts`        | the seven sites: id, name, native name, domain, canonical URL, description, headline, positioning, focus areas, category, icon key, role (`framework` for SaSarjan)             |
-| `content/introduction.ts` | `/ecosystem` copy: 0.1 fields (eyebrow, title, lead, Vision, CoCreation, initiatives) plus the optional 0.2 sections (hero, systems diagram, participation, CoCreator, closing) |
-| `content/footer.ts`       | ecosystem blurb, contact, copyright holder, policy links, brand line, CoCreator block, closing lines, default labels                                                            |
-| site `site.config.ts`     | per-site config, validated by `defineSiteConfig`, including the optional CoCreator destination (`cocreator`)                                                                    |
+| Module                    | Holds                                                                                                                                                                                     |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `content/messaging.ts`    | messaging hierarchy (vision, mission, approach, participation), common introduction, closing line; written once and referenced by the footer and page modules                             |
+| `content/sites.ts`        | the seven sites: id, name, native name, domain, canonical URL, description, headline, positioning, focus areas, category, icon key, role (`framework` for SaSarjan)                       |
+| `content/introduction.ts` | `/ecosystem` copy: 0.1 fields (eyebrow, title, lead, Vision, CoCreation, initiatives) plus the optional 0.2 sections (hero, systems diagram, participation, CoCreator, closing) and `seo` |
+| `content/footer.ts`       | ecosystem blurb, contact, copyright holder, policy links, brand line, CoCreator block, closing lines, default labels                                                                      |
+| site `site.config.ts`     | per-site config, validated by `defineSiteConfig`, including the optional CoCreator destination (`cocreator`)                                                                              |
 
 Every content module has `status: "draft" | "approved"`. `pnpm check:drafts` fails while
 anything is draft, and the release workflow runs it for `latest` releases.
@@ -125,6 +125,9 @@ have no `status`; every visible interface string, including the 0.2 ones, can be
 - The footer's CoCreator block is a plain `<div>` with an `<h2>`, not a `<section>`, so `full` has exactly
   one landmark of its own (contentinfo) and `band` one (region), plus labelled `<nav>`s.
 - `IntroductionPage` and `SharedPageLayout` render one `<h1>`, and each section is labelled by its `<h2>`.
+  The `/ecosystem` systems diagram is built from headings and ordered lists (National → State →
+  District, Village → Ward → Taluka → Block), so it reads in order without its visual layout. Its arrows
+  and the cards' disclosure chevrons are CSS borders, not text, so nothing extra is read aloud.
 - Links have visible focus outlines (`--swc-focus`) and buttons have a 44px minimum height. Layouts reflow down to 320px with no
   horizontal scroll (checked at 375px).
 - Default colours meet WCAG AA contrast on white: text #1c1d21, muted #4b5060, accent #8a1f5c.

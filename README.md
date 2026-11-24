@@ -124,12 +124,11 @@ footer from route layouts rather than the root layout so `/ecosystem` can pass t
 // app/ecosystem/page.tsx   (SevaPremi: app/[locale]/ecosystem/page.tsx)
 import type { Metadata } from "next";
 import Link from "next/link";
-import { IntroductionPage, introductionContent } from "@sasarjan/web-core";
+import { IntroductionPage, introductionMetadata } from "@sasarjan/web-core";
 import { site } from "@/site.config";
 
 export const metadata: Metadata = {
-  title: introductionContent.title,
-  description: introductionContent.lead[0],
+  ...introductionMetadata, // { title, description }: plain data, no next import
   alternates: { canonical: "/ecosystem" },
 };
 
@@ -142,16 +141,39 @@ export default function EcosystemPage() {
 }
 ```
 
+The page has eight sections, in this order: the hero (the page's only `<h1>`, the common
+introduction, "Explore Our Initiatives" and "Become a CoCreator"), the vision, the CoCreation
+approach, the seven initiative cards, the top-down/bottom-up systems diagram, the participation
+pathways, "Become a CoCreator", and the closing lines. Every section is labelled by its `<h2>`, and
+every id is `swc-` prefixed (`#swc-initiatives` is the initiatives section).
+
+- **Become a CoCreator** links to `cocreator` from your site config, in the hero and in section 7.
+  With no `cocreator` set, both buttons are hidden; the section's text still shows.
+- **Your CTAs** (`introduction.ctas`, or the `ctas` prop) and **your `children`** render together
+  after "Become a CoCreator", before the closing lines.
+- **The initiative cards** always list all seven initiatives and mark yours "You are here".
+  `ecosystem.overrides` and `ecosystem.openInNewTab` apply to them. Long focus-area lists show four
+  items and collapse the rest into a native `<details>`, so no JavaScript is needed.
+- **Translated content in the 0.1 shape.** If you pass `content` without `hero`, the page renders
+  the 0.1 layout (title, three sections, directory grid, your CTAs) exactly as before.
+- **Tagline.** Pair the page with `<SharedFooter condensed />` (see above): the tagline pair then
+  appears twice on the page, in the hero and the closing lines, and not in the footer.
+- **Sticky header?** Set `--swc-scroll-margin` to its height, so "Explore Our Initiatives" doesn't
+  scroll the section heading under it.
+
+`introductionContent.title` and `.lead[0]` still work as a metadata title and description if you
+already use them.
+
 ## Components
 
-| Export             | What it renders                                                             |
-| ------------------ | --------------------------------------------------------------------------- |
-| `SharedFooter`     | `full` footer landmark or `band` ecosystem section                          |
-| `EcosystemLinks`   | `<nav>` of the seven sites: `grid`, `list`, `inline` or `directory` layout  |
-| `EcosystemIcon`    | An initiative's decorative inline SVG icon (`icon` key from the directory)  |
-| `IntroductionPage` | `/ecosystem` page body: vision, CoCreation, initiatives, CTAs, your content |
-| `SharedPageLayout` | Optional title, intro, sections and CTA scaffold                            |
-| `SafeLink`         | A link that renders only allowlisted hrefs                                  |
+| Export             | What it renders                                                            |
+| ------------------ | -------------------------------------------------------------------------- |
+| `SharedFooter`     | `full` footer landmark or `band` ecosystem section                         |
+| `EcosystemLinks`   | `<nav>` of the seven sites: `grid`, `list`, `inline` or `directory` layout |
+| `EcosystemIcon`    | An initiative's decorative inline SVG icon (`icon` key from the directory) |
+| `IntroductionPage` | `/ecosystem` page body: the eight sections, your CTAs and your content     |
+| `SharedPageLayout` | Optional title, intro, sections and CTA scaffold                           |
+| `SafeLink`         | A link that renders only allowlisted hrefs                                 |
 
 All components are server-compatible. They use no hooks, no `"use client"`, no browser APIs and
 no Next.js imports, and ship no JavaScript to the browser unless you render them inside a client
@@ -192,6 +214,8 @@ in 0.2, all optional:
 | `--swc-footer-focus`                                                      | Focus outline inside the footer                            | `--swc-focus` if set, else the text colour |
 | `--swc-footer-card-bg`                                                    | CoCreator block background                                 | `rgb(127 127 127 / .06)`                   |
 | `--swc-footer-cta-bg`, `--swc-footer-cta-text`, `--swc-footer-cta-border` | "Become a CoCreator" button (an outline button by default) | transparent, text colour, text colour      |
+| `--swc-tint`                                                              | `/ecosystem` hero, framework card, CoCreator panel, icons  | `--swc-accent` at 7% over the page         |
+| `--swc-scroll-margin`                                                     | Space above a section reached by an in-page link           | `1.5rem`                                   |
 
 For a dark footer, set the footer tokens on `.swc-footer`. If you set `--swc-focus` on `:root` for
 your light pages, also set `--swc-footer-focus` there so focus stays visible:

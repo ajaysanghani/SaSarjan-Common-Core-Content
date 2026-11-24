@@ -55,4 +55,5 @@ export const defaultLabels: Required<Labels> = {
   becomeCoCreator: "Become a CoCreator",
   focusAreas: "Focus areas",
   frameworkBadge: "Overarching framework",
+  moreFocusAreas: "{count} more",
 };

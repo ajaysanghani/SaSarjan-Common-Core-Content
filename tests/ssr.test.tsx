@@ -38,6 +38,35 @@ describe(`server rendering on React ${version}`, () => {
     ["EcosystemLinks", <EcosystemLinks key="c" site={{ siteId: "itvidya" }} />],
     ["IntroductionPage", <IntroductionPage key="d" site={{ siteId: "incubator" }} />],
     [
+      "IntroductionPage with CoCreator, CTAs and children",
+      <IntroductionPage
+        key="h"
+        site={{
+          siteId: "sasarjan",
+          cocreator: { href: "/cocreate" },
+          introduction: { ctas: [{ label: "Start", href: "/start" }] },
+        }}
+      >
+        <p>Site content</p>
+      </IntroductionPage>,
+    ],
+    [
+      "IntroductionPage with 0.1-shape content",
+      <IntroductionPage
+        key="i"
+        site={{ siteId: "sevapremi" }}
+        content={{
+          status: "draft",
+          eyebrow: "e",
+          title: "t",
+          lead: ["l"],
+          vision: { id: "v", title: "V", paragraphs: [] },
+          cocreation: { id: "c", title: "C", paragraphs: [] },
+          initiatives: { id: "i", title: "I", paragraphs: [] },
+        }}
+      />,
+    ],
+    [
       "SharedPageLayout",
       <SharedPageLayout key="e" title="Title" sections={[{ id: "s", title: "S", body: ["x"] }]} />,
     ],
