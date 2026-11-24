@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { IntroductionPage, introductionContent } from "@sasarjan/web-core";
+import { IntroductionPage, introductionMetadata } from "@sasarjan/web-core";
 import { site } from "../../site.config";
 
+// introductionMetadata is plain data (no next import): the page's SEO title and description.
 export const metadata: Metadata = {
-  title: introductionContent.title,
-  description: introductionContent.lead[0],
+  ...introductionMetadata,
   alternates: { canonical: "/ecosystem" },
 };
 

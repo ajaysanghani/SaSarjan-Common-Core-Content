@@ -182,14 +182,14 @@ describe("SafeLink", () => {
 });
 
 describe("IntroductionPage", () => {
-  it("renders one h1, the vision, CoCreation and initiatives sections, and the directory", () => {
+  it("renders one h1, the vision, CoCreation and initiatives sections, and the seven initiatives", () => {
     render(<IntroductionPage site={{ siteId: "nanhasitara" }} />);
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
     const { vision, cocreation, initiatives } = introductionContent;
     expect(screen.getByRole("region", { name: vision.title })).toBeInTheDocument();
     expect(screen.getByRole("region", { name: cocreation.title })).toBeInTheDocument();
     const region = screen.getByRole("region", { name: initiatives.title });
-    expect(within(region).getAllByRole("listitem")).toHaveLength(7);
+    expect(within(region).getAllByRole("link", { name: /^Explore website/ })).toHaveLength(7);
   });
 
   it("still accepts and renders content in the 0.1 shape", () => {

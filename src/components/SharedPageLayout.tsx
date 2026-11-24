@@ -9,13 +9,20 @@ export interface PageSection {
   title: string;
   /** Paragraph strings, or any React content. */
   body: string[] | ReactNode;
+  /** Extra class on the `<section>`. */
+  className?: string;
 }
 
 export interface SharedPageLayoutProps {
   title: string;
   eyebrow?: string;
+  /** A line between the eyebrow and the title. */
+  subline?: string;
   intro?: string[] | ReactNode;
+  /** Calls to action at the end of the header, e.g. a hero's buttons. */
+  headerCtas?: Cta[];
   sections?: PageSection[];
+  /** Calls to action at the end of the page. */
   ctas?: Cta[];
   /** Rendered after the sections and before the call-to-action row. */
   children?: ReactNode;
@@ -32,7 +39,9 @@ export interface SharedPageLayoutProps {
 export function SharedPageLayout({
   title,
   eyebrow,
+  subline,
   intro,
+  headerCtas = [],
   sections = [],
   ctas = [],
   children,
@@ -44,8 +53,10 @@ export function SharedPageLayout({
     <Root className={cx("swc-root swc-page", className)}>
       <header className="swc-page__header">
         {eyebrow ? <p className="swc-page__eyebrow">{eyebrow}</p> : null}
+        {subline ? <p className="swc-page__subline">{subline}</p> : null}
         <h1 className="swc-page__title">{title}</h1>
         {intro ? <div className="swc-page__intro">{renderBody(intro)}</div> : null}
+        {headerCtas.length > 0 ? <CtaRow ctas={headerCtas} linkComponent={linkComponent} /> : null}
       </header>
 
       {sections.map((section) => (
@@ -53,7 +64,7 @@ export function SharedPageLayout({
           key={section.id}
           id={section.id}
           aria-labelledby={`${section.id}-title`}
-          className="swc-page__section"
+          className={cx("swc-page__section", section.className)}
         >
           <h2 id={`${section.id}-title`} className="swc-page__section-title">
             {section.title}

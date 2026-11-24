@@ -144,6 +144,8 @@ export interface SystemsSection {
   connection: string;
   /** The other initiatives and the role each plays around the two tiers. */
   supporting: Array<{ siteId: SiteId; text: string }>;
+  /** Heading of the supporting initiatives. Without it the list is labelled by the section title. */
+  supportingTitle?: string;
 }
 
 export interface CoCreatorSection {
@@ -156,6 +158,12 @@ export interface CoCreatorSection {
   pathwaysHeading: string;
   /** Ways to take part. */
   pathways: string[];
+}
+
+/** Title and description for the `/ecosystem` page's `<title>` and meta description. */
+export interface IntroductionMetadata {
+  title: string;
+  description: string;
 }
 
 /**
@@ -186,6 +194,8 @@ export interface IntroductionContent {
   cocreator?: CoCreatorSection;
   /** Closing lines at the end of the page. */
   closing?: { id: string; lines: string[] };
+  /** SEO title and description for the page; `introductionMetadata` exports the shared one. */
+  seo?: IntroductionMetadata;
 }
 
 export interface FooterContent {
@@ -229,6 +239,8 @@ export interface Labels {
   focusAreas?: string;
   /** Badge marking SaSarjan as the overarching framework. */
   frameworkBadge?: string;
+  /** Summary of an initiative card's collapsed focus areas. `{count}` is replaced. */
+  moreFocusAreas?: string;
 }
 
 export type FooterVariant = "full" | "band";

@@ -72,6 +72,7 @@ const systemsSection = z.strictObject({
   bottomUp: systemsTier,
   connection: text,
   supporting: z.array(z.strictObject({ siteId: z.enum(siteIds), text })),
+  supportingTitle: text.optional(),
 });
 const cocreatorSection = z.strictObject({
   id: sectionId,
@@ -98,6 +99,7 @@ const labelsShape = {
   becomeCoCreator: text.optional(),
   focusAreas: text.optional(),
   frameworkBadge: text.optional(),
+  moreFocusAreas: text.optional(),
 };
 
 export const labelsSchema: z.ZodType<Labels> = z.strictObject(labelsShape);
@@ -207,6 +209,7 @@ export const introductionContentSchema: z.ZodType<IntroductionContent> = z.stric
   participation: section.optional(),
   cocreator: cocreatorSection.optional(),
   closing: z.strictObject({ id: sectionId, lines: z.array(text).min(1) }).optional(),
+  seo: z.strictObject({ title: text.max(70), description: text.max(170) }).optional(),
 });
 
 export const footerContentSchema: z.ZodType<FooterContent> = z.strictObject({
