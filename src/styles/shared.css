@@ -18,6 +18,18 @@
  *   --swc-border #dcdde3        --swc-focus #8a1f5c        --swc-radius 12px
  *   --swc-max-width 72rem       --swc-gutter 1.25rem       --swc-space 1.5rem
  *   --swc-footer-bg (surface)   --swc-footer-text (text)   --swc-footer-muted (muted)
+ *
+ * Added in 0.2. The defaults derive from the text colour, so they work on light and dark footers:
+ *   --swc-hover-bg rgb(127 127 127 / .1)    hover and current-item background in the directory
+ *   --swc-icon-bg rgb(127 127 127 / .14)    initiative icon tile
+ *   --swc-icon-color (currentColor)         initiative icon stroke
+ *   --swc-badge-bg (transparent)            "You are here" badge in the directory
+ *   --swc-badge-text (currentColor)
+ *   --swc-footer-focus (--swc-focus, else currentColor)   focus outline inside the footer
+ *   --swc-footer-card-bg rgb(127 127 127 / .06)           CoCreator block background
+ *   --swc-footer-cta-bg (transparent)       "Become a CoCreator" button
+ *   --swc-footer-cta-text (currentColor)
+ *   --swc-footer-cta-border (currentColor)
  */
 
 .swc-root {
@@ -50,6 +62,21 @@
 .swc-btn:focus-visible {
   outline: 3px solid var(--swc-focus, #8a1f5c);
   outline-offset: 2px;
+}
+
+/* Inside the footer, focus follows the footer's own colours, so it stays visible on dark footers. */
+.swc-footer .swc-eco__link:focus-visible,
+.swc-footer .swc-footer__link:focus-visible,
+.swc-footer .swc-footer__more:focus-visible,
+.swc-footer .swc-btn:focus-visible {
+  outline-color: var(--swc-footer-focus, var(--swc-focus, currentColor));
+}
+
+.swc-icon {
+  display: block;
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
 }
 
 /* ------------------------------------------------------------------ EcosystemLinks */
@@ -152,6 +179,75 @@
   gap: 0.5rem 1.25rem;
 }
 
+/* Directory: icon, name and headline per initiative. Used by the footer. */
+.swc-eco--directory .swc-eco__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+  gap: 0.25rem 1rem;
+}
+
+.swc-eco--directory .swc-eco__item {
+  min-width: 0;
+}
+
+.swc-eco--directory .swc-eco__link {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  height: 100%;
+  padding: 0.625rem;
+  border-radius: calc(var(--swc-radius, 12px) - 2px);
+}
+
+.swc-eco--directory .swc-eco__link:hover {
+  background: var(--swc-hover-bg, rgb(127 127 127 / 0.1));
+}
+
+.swc-eco--directory .swc-eco__item--current .swc-eco__link {
+  background: var(--swc-hover-bg, rgb(127 127 127 / 0.1));
+  box-shadow: inset 0 0 0 1px var(--swc-border, #dcdde3);
+}
+
+.swc-eco__icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 8px;
+  background: var(--swc-icon-bg, rgb(127 127 127 / 0.14));
+  color: var(--swc-icon-color, currentColor);
+}
+
+.swc-eco__text {
+  display: block;
+  min-width: 0;
+}
+
+.swc-eco--directory .swc-eco__name {
+  font-size: 0.9375rem;
+  line-height: 1.4;
+}
+
+.swc-eco__headline {
+  display: block;
+  margin-top: 0.125rem;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--swc-muted, #4b5060);
+}
+
+.swc-eco--directory .swc-eco__badge {
+  margin-left: 0.375rem;
+  padding: 0 0.4375rem;
+  border: 1px solid currentColor;
+  background: var(--swc-badge-bg, transparent);
+  color: var(--swc-badge-text, currentColor);
+  font-size: 0.6875rem;
+  line-height: 1.5;
+}
+
 /* ------------------------------------------------------------------ SharedFooter */
 
 .swc-footer {
@@ -165,7 +261,10 @@
 }
 
 .swc-footer__inner,
-.swc-footer__bottom {
+.swc-footer__bottom,
+.swc-footer__ecosystem,
+.swc-footer__cocreator-wrap,
+.swc-footer__closing {
   width: 100%;
   max-width: var(--swc-max-width, 72rem);
   margin: 0 auto;
@@ -181,19 +280,205 @@
 
 .swc-footer--band .swc-footer__inner {
   grid-template-columns: minmax(0, 1fr);
-  gap: 1rem;
-  padding-block: 1.5rem;
+  gap: 1.5rem;
+  padding-block: 1.75rem 1.25rem;
+}
+
+/* The ecosystem part of the full footer: lead text, then the directory. */
+.swc-footer__ecosystem {
+  display: grid;
+  gap: 2rem var(--swc-space, 1.5rem);
+  padding-block: 2.5rem 2rem;
+}
+
+.swc-footer__site-row {
+  border-top: 1px solid var(--swc-border, #dcdde3);
 }
 
 @media (min-width: 48rem) {
   .swc-footer--full .swc-footer__about {
     grid-column: span 2;
   }
+}
+
+@media (min-width: 64rem) {
+  .swc-footer__ecosystem--split {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: 3rem;
+  }
 
   .swc-footer--band .swc-footer__inner {
     grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    gap: 2.5rem;
     align-items: start;
   }
+
+  .swc-footer--band .swc-footer__inner--single {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Lead: brand line, tagline, introduction */
+.swc-footer__brand {
+  margin: 0 0 0.75rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.swc-footer__brand-sep {
+  font-weight: 400;
+  color: var(--swc-footer-muted, var(--swc-muted, #4b5060));
+}
+
+.swc-footer__brand-native {
+  font-weight: 600;
+}
+
+.swc-footer__tagline {
+  margin: 0 0 1rem;
+  max-width: 34rem;
+}
+
+.swc-footer__tagline-main {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.swc-footer--band .swc-footer__tagline-main {
+  font-size: 1.0625rem;
+}
+
+.swc-footer__tagline-sub {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--swc-footer-muted, var(--swc-muted, #4b5060));
+}
+
+.swc-footer__intro {
+  margin-bottom: 1rem;
+}
+
+.swc-footer__participation {
+  margin: 0 0 0.75rem;
+  font-weight: 600;
+}
+
+.swc-footer__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+}
+
+/* Directory inside the footer. The negative margin lines the icons up with the text above; it
+   never exceeds the gutter, so it can't cause horizontal scrolling. */
+.swc-footer__directory .swc-eco__list {
+  margin-inline: calc(-1 * min(0.625rem, var(--swc-gutter, 1.25rem)));
+}
+
+.swc-footer__directory--compact .swc-eco__list {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 13.5rem), 1fr));
+  gap: 0.125rem 0.75rem;
+}
+
+.swc-footer__directory--compact .swc-eco__link {
+  gap: 0.625rem;
+  padding: 0.5rem 0.625rem;
+}
+
+.swc-footer__directory--compact .swc-eco__icon {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 7px;
+}
+
+.swc-footer__directory--compact .swc-icon {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+/* CoCreator */
+.swc-footer__cocreator-wrap {
+  padding-bottom: 2rem;
+}
+
+.swc-footer__cocreator {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--swc-border, #dcdde3);
+  border-radius: var(--swc-radius, 12px);
+  background: var(--swc-footer-card-bg, rgb(127 127 127 / 0.06));
+}
+
+.swc-footer__cocreator-text {
+  flex: 1 1 20rem;
+  min-width: 0;
+}
+
+.swc-footer__cocreator-heading {
+  margin: 0 0 0.25rem;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: normal;
+  text-transform: none;
+  color: inherit;
+}
+
+.swc-footer__cocreator-body {
+  margin: 0;
+  max-width: 44rem;
+  color: var(--swc-footer-muted, var(--swc-muted, #4b5060));
+}
+
+/* An outline button in the footer's text colour, so it keeps the footer's contrast on any background. */
+.swc-footer .swc-footer__cta {
+  flex: none;
+  border-color: var(--swc-footer-cta-border, currentColor);
+  background: var(--swc-footer-cta-bg, transparent);
+  color: var(--swc-footer-cta-text, currentColor);
+}
+
+.swc-footer .swc-footer__cta:hover {
+  background: var(--swc-footer-cta-bg, var(--swc-hover-bg, rgb(127 127 127 / 0.1)));
+}
+
+/* Closing lines */
+.swc-footer__closing {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 1.5rem;
+  padding-block: 1.25rem 0.75rem;
+  border-top: 1px solid var(--swc-border, #dcdde3);
+}
+
+.swc-footer__closing-line {
+  margin: 0;
+  color: var(--swc-footer-muted, var(--swc-muted, #4b5060));
+}
+
+.swc-footer__closing-line:first-child {
+  font-weight: 600;
+  color: inherit;
+}
+
+.swc-footer__closing + .swc-footer__bottom {
+  padding-top: 0.5rem;
+  border-top: 0;
+}
+
+.swc-footer--band .swc-footer__closing {
+  padding-block: 0 1.25rem;
+  border-top: 0;
+  font-size: 0.875rem;
 }
 
 .swc-footer__site {
@@ -252,7 +537,8 @@
 }
 
 .swc-footer .swc-eco__domain,
-.swc-footer .swc-eco__desc {
+.swc-footer .swc-eco__desc,
+.swc-footer .swc-eco__headline {
   color: var(--swc-footer-muted, var(--swc-muted, #4b5060));
 }
 

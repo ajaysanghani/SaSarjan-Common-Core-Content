@@ -13,3 +13,12 @@
   --swc-border: rgb(255 255 255 / 0.2);
   --swc-focus: #f2c14e;
 }
+
+/* IT Vidya's token set for the band inside its dark (#133530) footer, from SEVEN-SITE-ROLLOUT.md. */
+.itv-footer .swc-footer {
+  --swc-footer-bg: transparent;
+  --swc-footer-text: #fff;
+  --swc-footer-muted: rgb(255 255 255 / 0.75);
+  --swc-border: rgb(255 255 255 / 0.15);
+  --swc-footer-focus: #fff;
+}

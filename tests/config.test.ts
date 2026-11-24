@@ -27,6 +27,33 @@ describe("defineSiteConfig", () => {
     expect(defineSiteConfig(config)).toBe(config);
   });
 
+  it("accepts every footer section key, old and new", () => {
+    const config = {
+      siteId: "itvidya",
+      footer: {
+        sections: {
+          ecosystemIntro: true,
+          ecosystemLinks: true,
+          siteLinks: false,
+          contact: false,
+          policies: true,
+          brand: true,
+          tagline: false,
+          introduction: true,
+          cocreator: false,
+          closing: true,
+        },
+      },
+    } satisfies SiteConfig;
+    expect(defineSiteConfig(config)).toBe(config);
+    expect(() =>
+      defineSiteConfig({
+        siteId: "itvidya",
+        footer: { sections: { taglines: true } },
+      } as unknown as SiteConfig),
+    ).toThrow(SiteConfigError);
+  });
+
   it("rejects an unknown site id", () => {
     expect(() => defineSiteConfig({ siteId: "example" } as unknown as SiteConfig)).toThrow(SiteConfigError);
   });

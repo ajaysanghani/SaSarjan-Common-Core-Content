@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SharedFooter } from "@sasarjan/web-core";
 import "@sasarjan/web-core/styles.css";
 import "./globals.css";
-import { site } from "../site.config";
 
 export const metadata: Metadata = { title: "web-core example (Next 16)" };
 
+// The footer is rendered by the route layouts, (site)/layout.tsx and ecosystem/layout.tsx, so
+// /ecosystem can ask for the condensed footer.
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
@@ -17,8 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Link href="/ecosystem">Ecosystem</Link>
           </nav>
         </header>
-        <main>{children}</main>
-        <SharedFooter site={site} linkComponent={Link} />
+        {children}
       </body>
     </html>
   );

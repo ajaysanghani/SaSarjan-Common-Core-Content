@@ -17,6 +17,24 @@ describe(`server rendering on React ${version}`, () => {
   it.each([
     ["SharedFooter full", <SharedFooter key="a" site={{ siteId: "sasarjan" }} year={2026} />],
     ["SharedFooter band", <SharedFooter key="b" site={{ siteId: "sasarjan" }} variant="band" />],
+    [
+      "SharedFooter full, condensed, with CoCreator",
+      <SharedFooter
+        key="f"
+        site={{ siteId: "sevapremi", cocreator: { href: "/cocreate" } }}
+        condensed
+        year={2026}
+      />,
+    ],
+    [
+      "SharedFooter band, condensed, with CoCreator",
+      <SharedFooter
+        key="g"
+        site={{ siteId: "10xgrowth", cocreator: { href: "/cocreate" } }}
+        variant="band"
+        condensed
+      />,
+    ],
     ["EcosystemLinks", <EcosystemLinks key="c" site={{ siteId: "itvidya" }} />],
     ["IntroductionPage", <IntroductionPage key="d" site={{ siteId: "incubator" }} />],
     [

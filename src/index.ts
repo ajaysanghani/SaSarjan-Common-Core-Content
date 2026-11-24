@@ -2,6 +2,7 @@
 // components (e.g. a footer rendered inside a "use client" tree). Validation lives in ./config.
 export { SharedFooter, type SharedFooterProps } from "./components/SharedFooter";
 export { EcosystemLinks, type EcosystemLinksProps } from "./components/EcosystemLinks";
+export { EcosystemIcon, type EcosystemIconProps } from "./components/EcosystemIcon";
 export { IntroductionPage, type IntroductionPageProps } from "./components/IntroductionPage";
 export {
   SharedPageLayout,

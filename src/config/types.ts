@@ -233,12 +233,34 @@ export interface Labels {
 
 export type FooterVariant = "full" | "band";
 
+/**
+ * Turns footer blocks on or off. Every key is optional; unset keys use the defaults below.
+ * Blocks that have nothing to show (no CoCreator destination, no link groups) stay hidden either way.
+ */
 export interface FooterSections {
+  /** The ecosystem lead: the site's name in `full`, and the "About the ecosystem" link. Default on. */
   ecosystemIntro?: boolean;
+  /** The seven-initiative directory. Default on. */
   ecosystemLinks?: boolean;
+  /** The site's own link groups (`full` only). Default on. */
   siteLinks?: boolean;
+  /** The contact email (`full` only). Default on. */
   contact?: boolean;
+  /** The policy links (`full` only). Default on. */
   policies?: boolean;
+  /** The brand line, "SaSarjan | स सर्जन". Default on. */
+  brand?: boolean;
+  /** The tagline pair ("CoCreating the Future, Together." and the mission). Defaults to `ecosystemIntro`. */
+  tagline?: boolean;
+  /**
+   * The rest of the common introduction (the paragraph, the participation line and the summary).
+   * Defaults to `ecosystemIntro` in `full` and to off in `band`.
+   */
+  introduction?: boolean;
+  /** The "Become a CoCreator" block. Default on, but shown only when `SiteConfig.cocreator` is set. */
+  cocreator?: boolean;
+  /** The closing lines: both in `full`, one in `band`. Default on. */
+  closing?: boolean;
 }
 
 /**
