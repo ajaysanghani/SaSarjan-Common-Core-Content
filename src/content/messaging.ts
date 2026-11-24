@@ -5,11 +5,11 @@ import type { EcosystemMessaging } from "../config/types";
  * (`footer.ts`) and the `/ecosystem` page (`introduction.ts`) reference these strings rather than
  * repeating them.
  *
- * DRAFT: requires approval. Copy from the v0.2 content brief; nothing here was written by the
+ * Approved by the content owner on 2026-11-24. Copy from the v0.2 content brief; nothing here was written by the
  * package maintainers.
  */
 export const ecosystemMessaging: EcosystemMessaging = {
-  status: "draft",
+  status: "approved",
   hierarchy: {
     vision: "Collective Prosperity.",
     mission: "Solve the Unsolved. Advance Collective Prosperity.",

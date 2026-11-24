@@ -39,7 +39,7 @@ describe("ecosystem sites: new fields", () => {
     expect(site.category).toBeTruthy();
     expect(ecosystemIconKeys).toContain(site.icon);
     expect(site.role).toBeDefined();
-    expect(site.status).toBe("draft");
+    expect(site.status).toBe("approved");
   });
 
   it("all seven sites parse together, each with its own icon", () => {
@@ -134,8 +134,9 @@ describe("messaging hierarchy", () => {
     expect(footerContent.brand).toEqual({ name: "SaSarjan", nativeName: "स सर्जन", nativeNameLang: "hi" });
   });
 
-  it("is reported by the draft gate", () => {
-    expect(findDraftContent().map((d) => d.path)).toContain("ecosystemMessaging");
+  it("is approved, so the draft gate does not report it", () => {
+    expect(ecosystemMessaging.status).toBe("approved");
+    expect(findDraftContent().map((d) => d.path)).not.toContain("ecosystemMessaging");
   });
 });
 

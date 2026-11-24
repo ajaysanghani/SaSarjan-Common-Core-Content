@@ -1,5 +1,15 @@
 # @sasarjan/web-core
 
+## 0.2.1
+
+### Patch Changes
+
+- Approve the ecosystem copy. The content owner approved all shared content with no wording changes:
+  the seven sites, the messaging hierarchy and common introduction, the `/ecosystem` page copy
+  (including its SEO title and description) and the footer content. Nothing renders differently.
+  Every content module is now `status: "approved"`, so `pnpm check:drafts` passes and this version
+  can be published on the `latest` dist-tag.
+
 ## 0.2.0
 
 **Upgrading from 0.1.x.** This release brings the v0.2 ecosystem messaging to the shared footer and

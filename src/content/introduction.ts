@@ -7,7 +7,7 @@ const { hierarchy, introduction, closingLine } = ecosystemMessaging;
  * Title and description for the `/ecosystem` page's metadata, as plain data with no `next` import:
  * `export const metadata = { ...introductionMetadata, alternates: { canonical: "/ecosystem" } }`.
  *
- * DRAFT: requires approval. Proposed in the v0.2 content brief; needs explicit sign-off. Covered by
+ * From the v0.2 content brief; approved by the content owner on 2026-11-24. Covered by
  * `introductionContent.status`, which carries it as `seo`.
  */
 export const introductionMetadata: IntroductionMetadata = {
@@ -19,7 +19,7 @@ export const introductionMetadata: IntroductionMetadata = {
 /**
  * Copy for the shared /ecosystem page.
  *
- * DRAFT: requires approval. Copy from the v0.2 content brief. The hierarchy and the common
+ * Approved by the content owner on 2026-11-24. Copy from the v0.2 content brief. The hierarchy and the common
  * introduction are referenced from `messaging.ts`, not repeated. A few short lines were written by
  * the package maintainers where the brief asks for them; each is marked "Written for the package".
  *
@@ -27,19 +27,19 @@ export const introductionMetadata: IntroductionMetadata = {
  * them (`title` and `lead[0]`).
  */
 export const introductionContent: IntroductionContent = {
-  status: "draft",
+  status: "approved",
   eyebrow: "The SaSarjan ecosystem",
   title: hierarchy.approach,
   lead: [introduction.body, introduction.summary],
 
-  // DRAFT: requires approval. 1. Hero; its body is `lead`.
+  // 1. Hero; its body is `lead`.
   hero: {
     eyebrow: hierarchy.approach,
     subline: hierarchy.mission,
     headline: hierarchy.participation,
   },
 
-  // DRAFT: requires approval. 2. Vision.
+  // 2. Vision.
   vision: {
     id: "swc-vision",
     title: "Our Vision: A World Where Everyone Can Flourish.",
@@ -55,7 +55,7 @@ export const introductionContent: IntroductionContent = {
     ],
   },
 
-  // DRAFT: requires approval. 3. CoCreation approach.
+  // 3. CoCreation approach.
   cocreation: {
     id: "swc-cocreation",
     title: "Our CoCreation Approach: Different Strengths. Shared Possibilities.",
@@ -81,7 +81,7 @@ export const introductionContent: IntroductionContent = {
     ],
   },
 
-  // DRAFT: requires approval. 4. Initiatives; the cards come from the ecosystem directory.
+  // 4. Initiatives; the cards come from the ecosystem directory.
   initiatives: {
     id: "swc-initiatives",
     title: "One Ecosystem. Seven Pathways to Collective Prosperity.",
@@ -91,7 +91,7 @@ export const introductionContent: IntroductionContent = {
     ],
   },
 
-  // DRAFT: requires approval. 5. Systems diagram.
+  // 5. Systems diagram.
   systems: {
     id: "swc-systems",
     title: "Connecting Systems Transformation with Community Action.",
@@ -114,7 +114,7 @@ export const introductionContent: IntroductionContent = {
         "Volunteer mobilisation",
       ],
     },
-    // DRAFT: requires approval. Proposed in the brief; needs explicit sign-off.
+    // Proposed in the brief; approved with the rest of the copy.
     connection: "The two meet where district-level systems work and block-level community action overlap.",
     supporting: [
       { siteId: "talentexcel", text: "Develops people and leadership capabilities" },
@@ -127,7 +127,7 @@ export const introductionContent: IntroductionContent = {
     supportingTitle: "Five initiatives that strengthen both",
   },
 
-  // DRAFT: requires approval. 6. Participation philosophy.
+  // 6. Participation philosophy.
   participation: {
     id: "swc-participation",
     title: "Everyone Has Something Valuable to Contribute.",
@@ -145,7 +145,7 @@ export const introductionContent: IntroductionContent = {
     ],
   },
 
-  // DRAFT: requires approval. 7. Become a CoCreator; the link comes from `SiteConfig.cocreator`.
+  // 7. Become a CoCreator; the link comes from `SiteConfig.cocreator`.
   cocreator: {
     id: "swc-cocreator",
     title: "The Future Is Something We Create Together.",
@@ -179,12 +179,12 @@ export const introductionContent: IntroductionContent = {
     ],
   },
 
-  // DRAFT: requires approval. 8. Closing; closing line from brief decision D3.
+  // 8. Closing; closing line from brief decision D3.
   closing: {
     id: "swc-closing",
     lines: [hierarchy.approach, hierarchy.mission, closingLine],
   },
 
-  // DRAFT: requires approval. SEO copy, proposed in the brief.
+  // SEO copy from the brief.
   seo: introductionMetadata,
 };

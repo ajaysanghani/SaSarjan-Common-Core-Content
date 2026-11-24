@@ -120,10 +120,9 @@ describe("shared content", () => {
     expect(ecosystemSitesSchema.safeParse(broken).success).toBe(false);
   });
 
-  it("reports draft content for the release gate", () => {
-    const drafts = findDraftContent();
-    // Everything is draft until approved; see docs/CONTENT-GOVERNANCE.md.
-    expect(drafts.map((d) => d.path)).toContain("introductionContent");
-    expect(drafts.map((d) => d.path)).toContain("ecosystemSites.talentexcel");
+  it("reports no draft content once everything is approved", () => {
+    // Approved by the content owner on 2026-11-24; see docs/CONTENT-GOVERNANCE.md. A wording change
+    // goes back to draft, and this test then fails until it is approved again.
+    expect(findDraftContent()).toEqual([]);
   });
 });

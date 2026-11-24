@@ -14,8 +14,9 @@ install a pinned version, and a change reaches a site when that site upgrades an
 | IT Vidya     | itvidya.com     |
 | Incubator.in | incubator.in    |
 
-> **Status:** pre-release. All shared content is marked **draft** until approved
-> ([content governance](docs/CONTENT-GOVERNANCE.md)). Drafts can ship on the `next` dist-tag only.
+> **Status:** all shared content was approved on 2026-11-24 and can ship on the `latest` dist-tag.
+> New or reworded copy goes back to **draft** until approved again
+> ([content governance](docs/CONTENT-GOVERNANCE.md)); drafts can ship on `next` only.
 
 ## What belongs here
 
