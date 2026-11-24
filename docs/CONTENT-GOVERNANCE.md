@@ -50,8 +50,9 @@ To change content:
 `.github/CODEOWNERS` requests review from the repository owner on every PR. Add the content owners
 there once they are named.
 
-## Sources of the current drafts
+## Sources of the current content
 
+All of it was approved by the repository owner (D4) on 2026-11-24, with no wording changes.
 Nothing was invented. Since v0.2 most copy comes from the content brief
 ([prompts/content-brief.md](../prompts/content-brief.md)); a few short lines the brief asked for were
 written for the package and are marked `// Written for the package.` in the source.
@@ -75,29 +76,27 @@ written for the package and are marked `// Written for the package.` in the sour
 
 Decisions D1–D7 in the [content brief](../prompts/content-brief.md) settled the display names (D1:
 keep the current names), canonical URLs (D2: keep the current ones), the closing line (D3), the
-approver (D4: the repository owner), the categories (D5: proposed, draft), the CoCreator destination
+approver (D4: the repository owner), the categories (D5: proposed, approved 2026-11-24), the CoCreator destination
 (D6: none yet, so the CTA is hidden) and shipping draft copy on `next` (D7).
 
-These must still be settled before the first `latest` release:
+**Settled on 2026-11-24.** The repository owner (D4) approved everything in `messaging.ts`,
+`sites.ts`, `introduction.ts` and `footer.ts` as written, including the canonical URLs (TalentExcel,
+Nanha Sitara and Incubator.in keep the bare domain), the initiative categories (D5), the systems
+connection line, the SEO title and description, and the lines marked `// Written for the package.`
 
-1. **Canonical URL per site.** D2 keeps the current URLs, but TalentExcel, Nanha Sitara and
-   Incubator.in were never confirmed in their repos (bare domain assumed).
-2. **Copy sign-off.** The repository owner (D4) approves everything in `messaging.ts`, `sites.ts`,
-   `introduction.ts` and `footer.ts`, in particular:
-   - the proposed initiative categories (D5);
-   - the systems connection line ("The two meet where district-level systems work and block-level
-     community action overlap."), marked as needing sign-off in the brief;
-   - the lines written for the package, marked `// Written for the package.` in the source.
-3. **Shared contact email.** `info@sasarjan.com` appears in the SaSarjan config but is not yet
+Still open. None of these blocks a release: the footer was approved with the defaults described in
+each item.
+
+1. **Shared contact email.** `info@sasarjan.com` appears in the SaSarjan config but is not yet
    approved for ecosystem-wide use (`footerContent.contactEmail` is `null`).
-4. **Copyright holder.** The legal entity name. Until then, each site's own name is used.
-5. **Shared policy links.** Are privacy and terms shared across sites or per site? Currently per site.
-6. **Content license.** The code is MIT. Is the brand copy also MIT, or reserved (e.g. "© SaSarjan, all
+2. **Copyright holder.** The legal entity name. Until then, each site's own name is used.
+3. **Shared policy links.** Are privacy and terms shared across sites or per site? Currently per site.
+4. **Content license.** The code is MIT. Is the brand copy also MIT, or reserved (e.g. "© SaSarjan, all
    rights reserved" for `src/content/`)? Decide, and update `LICENSE` and the README if it is
    reserved.
-7. **Translations.** Who supplies and approves Hindi or other copy (SevaPremi already serves Hindi).
+5. **Translations.** Who supplies and approves Hindi or other copy (SevaPremi already serves Hindi).
    Every new field and label can be overridden per site, so this doesn't block the package.
-8. **CoCreator destination (D6).** None exists yet. Each site turns the CTA on by setting
+6. **CoCreator destination (D6).** None exists yet. Each site turns the CTA on by setting
    `cocreator` in its `site.config.ts` once a real destination is agreed. Never invent one.
 
 ## Adding a site

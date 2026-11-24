@@ -7,7 +7,7 @@ const framework = ecosystemSites.find((site) => site.role === "framework");
 /**
  * Shared footer content.
  *
- * DRAFT: requires approval.
+ * Approved by the content owner on 2026-11-24.
  * - ecosystemBlurb is adapted from the 10xGrowth footer. It is kept for the 0.1 footer layout.
  * - contactEmail is null: `info@sasarjan.com` appears in the SaSarjan site config, but it has not
  *   been approved as the contact for the whole ecosystem.
@@ -17,22 +17,21 @@ const framework = ecosystemSites.find((site) => site.role === "framework");
  *   ecosystem directory and `messaging.ts` instead of repeating their text.
  */
 export const footerContent: FooterContent = {
-  status: "draft",
+  status: "approved",
   ecosystemBlurb:
     "Part of the SaSarjan ecosystem: initiatives building collective prosperity through co-creation, community and service.",
   contactEmail: null,
   copyrightHolder: null,
   policyLinks: [],
-  // DRAFT: requires approval. "SaSarjan | स सर्जन"
+  // "SaSarjan | स सर्जन"
   brand: framework
     ? { name: framework.name, nativeName: framework.nativeName, nativeNameLang: framework.nativeNameLang }
     : undefined,
-  // DRAFT: requires approval.
   cocreator: {
     heading: "Become a CoCreator",
     body: "Bring your ideas, knowledge, skills, experience, resources and enthusiasm. Together, we can create solutions and opportunities that contribute to Collective Prosperity.",
   },
-  // DRAFT: requires approval. Closing line from brief decision D3.
+  // Closing line from brief decision D3.
   closing: [ecosystemMessaging.closingLine, ecosystemMessaging.introduction.summary],
 };
 
