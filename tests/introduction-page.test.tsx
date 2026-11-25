@@ -15,9 +15,8 @@ import { siteIds } from "../src/config";
 const content = introductionContent;
 const { vision, cocreation, initiatives } = content;
 // The eight-section content is complete in the package; these narrow the optional fields.
-const hero = content.hero!;
 const systems = content.systems!;
-const participation = content.participation!;
+const journey = content.journey!;
 const cocreator = content.cocreator!;
 const closing = content.closing!;
 
@@ -36,27 +35,38 @@ describe("IntroductionPage, eight sections", () => {
     render(<IntroductionPage site={nanhasitara} />);
     const h1s = screen.getAllByRole("heading", { level: 1 });
     expect(h1s).toHaveLength(1);
-    expect(h1s[0]).toHaveTextContent(hero.headline);
+    expect(h1s[0]).toHaveTextContent("CoCreating a World of Collective Prosperity");
   });
 
-  it("renders the hero with its eyebrow, sub-line and the common introduction", () => {
+  it("renders the hero: what SaSarjan means, the description, the supporting line and its CTA", () => {
     const { container } = render(<IntroductionPage site={nanhasitara} />);
-    const header = container.querySelector(".swc-page__header")!;
-    expect(within(header as HTMLElement).getByText(hero.eyebrow)).toBeInTheDocument();
-    expect(within(header as HTMLElement).getByText(hero.subline)).toBeInTheDocument();
-    for (const paragraph of content.lead) {
-      expect(within(header as HTMLElement).getByText(paragraph)).toBeInTheDocument();
-    }
-    expect(
-      within(header as HTMLElement).getByRole("link", { name: "Explore Our Initiatives" }),
-    ).toHaveAttribute("href", `#${initiatives.id}`);
+    const header = container.querySelector(".swc-page__header") as HTMLElement;
+    const eyebrow = header.querySelector(".swc-page__eyebrow") as HTMLElement;
+    expect(eyebrow).toHaveTextContent("SaSarjan (स सर्जन) means CoCreation");
+    expect(within(eyebrow).getByText("स सर्जन")).toHaveAttribute("lang", "hi");
+    for (const paragraph of content.lead) expect(within(header).getByText(paragraph)).toBeInTheDocument();
+    expect(within(header).getByText("Learn. Earn. Lead. Contribute. CoCreate.")).toBeInTheDocument();
+    expect(within(header).getByRole("link", { name: "Explore Our Ecosystem" })).toHaveAttribute(
+      "href",
+      `#${initiatives.id}`,
+    );
   });
 
-  it("renders all eight sections in the brief's order", () => {
+  it("lists every section in an in-page table of contents", () => {
+    render(<IntroductionPage site={nanhasitara} />);
+    const toc = screen.getByRole("navigation", { name: "On this page" });
+    expect(
+      within(toc)
+        .getAllByRole("link")
+        .map((a) => a.getAttribute("href")),
+    ).toEqual([vision, initiatives, cocreation, systems, journey, cocreator].map((s) => `#${s.id}`));
+  });
+
+  it("renders all eight sections in order", () => {
     const { container } = render(<IntroductionPage site={nanhasitara} />);
     const order = [
       container.querySelector(".swc-page__header"),
-      ...[vision, cocreation, initiatives, systems, participation, cocreator].map((section) =>
+      ...[vision, initiatives, cocreation, systems, journey, cocreator].map((section) =>
         screen.getByRole("region", { name: section.title }),
       ),
       container.querySelector(`#${closing.id}`),
@@ -105,7 +115,22 @@ describe("IntroductionPage, eight sections", () => {
     }
   });
 
-  it("renders seven initiative cards with category, headline, positioning, focus areas and a link", () => {
+  it("maps the initiatives to the four dimensions, and says Nature has no dedicated one yet", () => {
+    render(<IntroductionPage site={nanhasitara} />);
+    const region = screen.getByRole("region", { name: vision.title });
+    const sites = (dimension: string) =>
+      [...region.querySelectorAll(`[aria-labelledby="${vision.id}-${dimension}-sites"] a`)].map(
+        (a) => a.textContent,
+      );
+    expect(sites("human")).toEqual(["TalentExcel", "IT Vidya", "Nanha Sitara", "SaSarjan"]);
+    expect(sites("organisation")).toEqual(["10xGrowth", "Incubator.in", "SaSarjan"]);
+    expect(sites("community")).toEqual(["SevaPremi", "SaSarjan"]);
+    expect(sites("nature")).toEqual(["SaSarjan"]);
+    expect(within(region).getAllByText("No dedicated initiative yet.")).toHaveLength(1);
+    expect(region.querySelectorAll("svg")).toHaveLength(4);
+  });
+
+  it("renders seven light initiative cards: headline, who it serves, dimension tags, focus areas and a link", () => {
     render(<IntroductionPage site={nanhasitara} />);
     const list = cards();
     expect(list).toHaveLength(7);
@@ -113,9 +138,10 @@ describe("IntroductionPage, eight sections", () => {
       const site = ecosystemSites[i]!;
       const scoped = within(card);
       expect(scoped.getByRole("heading", { level: 3 })).toHaveTextContent(site.name);
-      expect(card.querySelector(".swc-intro__card-category")).toHaveTextContent(site.category!);
+      expect(card).toHaveAttribute("id", `swc-initiative-${site.id}`);
       expect(scoped.getByText(site.headline!)).toBeInTheDocument();
-      expect(scoped.getByText(site.positioning!)).toBeInTheDocument();
+      expect(scoped.getByText(content.initiativeAudiences![site.id]!)).toBeInTheDocument();
+      expect(scoped.getByRole("list", { name: "Development dimensions" })).toBeInTheDocument();
       const chips = [...card.querySelectorAll(".swc-intro__chip")].map((chip) => chip.textContent);
       expect(chips).toEqual(site.focusAreas);
       const link = scoped.getByRole("link", { name: new RegExp(`^Explore website ${site.domain}`) });
@@ -137,8 +163,8 @@ describe("IntroductionPage, eight sections", () => {
     const seva = cards().find((card) => within(card).queryByRole("heading", { name: "SevaPremi" }))!;
     const details = seva.querySelector("details")!;
     expect(details).not.toHaveAttribute("open");
-    expect(details.querySelector("summary")).toHaveTextContent("7 more");
-    expect(details.querySelectorAll("li")).toHaveLength(7);
+    expect(details.querySelector("summary")).toHaveTextContent("8 more");
+    expect(details.querySelectorAll("li")).toHaveLength(8);
   });
 
   it("draws the systems diagram as ordered lists under labelled tiers", () => {
@@ -167,27 +193,34 @@ describe("IntroductionPage, eight sections", () => {
     expect(region.querySelector("img, canvas, svg text")).toBeNull();
   });
 
-  it("presents the five participation pathways as an unordered set", () => {
-    render(<IntroductionPage site={nanhasitara} />);
-    const region = screen.getByRole("region", { name: participation.title });
-    const list = within(region).getByRole("list", { name: participation.itemsLabel });
-    expect(list.tagName).toBe("UL");
-    expect(
-      within(list)
-        .getAllByRole("heading", { level: 3 })
-        .map((h) => h.textContent),
-    ).toEqual(["Learn", "Earn", "Lead", "Inspire", "CoCreate"]);
+  it("labels the journey as illustrative and links its initiatives to their cards", () => {
+    const { container } = render(<IntroductionPage site={nanhasitara} />);
+    const region = screen.getByRole("region", { name: journey.title });
+    const steps = within(region).getByRole("list", { name: "Illustrative example" });
+    expect(steps.tagName).toBe("OL");
+    expect(within(steps).getAllByRole("listitem")).toHaveLength(6);
+    expect(within(steps).getAllByRole("listitem")[0]).toHaveTextContent(
+      "A young person discovers learning through IT Vidya and TalentExcel.",
+    );
+    for (const link of within(steps).getAllByRole("link")) {
+      expect(container.querySelector(link.getAttribute("href")!)).toHaveClass("swc-intro__card");
+    }
   });
 
-  it("lists who can take part and the ways to contribute", () => {
+  it("shows eight participation pathways, each with its initiatives", () => {
     render(<IntroductionPage site={nanhasitara} />);
     const region = screen.getByRole("region", { name: cocreator.title });
     expect(
-      within(region).getByRole("heading", { level: 3, name: cocreator.audiencesHeading }),
-    ).toBeInTheDocument();
-    for (const audience of cocreator.audiences)
-      expect(within(region).getByText(audience)).toBeInTheDocument();
-    for (const pathway of cocreator.pathways) expect(within(region).getByText(pathway)).toBeInTheDocument();
+      within(region)
+        .getAllByRole("heading", { level: 3 })
+        .map((h) => h.textContent),
+    ).toEqual(cocreator.participationPathways!.map((p) => p.audience));
+    expect(within(region).getAllByRole("link", { name: "SevaPremi" })[0]).toHaveAttribute(
+      "href",
+      "https://www.sevapremi.com",
+    );
+    // No CoCreator destination, so no join actions.
+    expect(within(region).queryByRole("link", { name: "Join as a volunteer" })).toBeNull();
   });
 
   it("ends with the closing lines", () => {
@@ -213,6 +246,11 @@ describe("IntroductionPage CoCreator call to action", () => {
     for (const link of links) expect(link).toHaveAttribute("href", "/cocreate");
     const region = screen.getByRole("region", { name: cocreator.title });
     expect(region).toContainElement(links[1]!);
+    // Each pathway's action goes to the destination with its interest preselected.
+    expect(within(region).getByRole("link", { name: "Join as a volunteer" })).toHaveAttribute(
+      "href",
+      "/cocreate?interest=volunteer",
+    );
   });
 
   it("uses the configured label", () => {
@@ -344,7 +382,7 @@ describe("IntroductionPage with site options", () => {
     expect(screen.getByText("बदलाव")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "पहल देखें" })).toBeInTheDocument();
     expect(screen.getAllByRole("link", { name: /^वेबसाइट देखें/ })).toHaveLength(7);
-    expect(screen.getAllByText("7 और")).toHaveLength(1);
+    expect(screen.getAllByText("8 और")).toHaveLength(1);
   });
 });
 

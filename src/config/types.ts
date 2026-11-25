@@ -12,6 +12,12 @@ export type SiteId =
 /** SaSarjan is the overarching CoCreation framework; the other six are initiatives within it. */
 export type EcosystemRole = "framework" | "initiative";
 
+/**
+ * The four dimensions of Collective Prosperity: Human Potential Development, Organisation Potential
+ * Development, Community Potential Development and Nature Regeneration.
+ */
+export type DevelopmentDimension = "human" | "organisation" | "community" | "nature";
+
 /** Key of the package's inline icon for an initiative. */
 export type EcosystemIconKey =
   "framework" | "talent" | "growth" | "community" | "learning" | "startup" | "children";
@@ -38,6 +44,8 @@ export interface EcosystemSite {
   /** Small label on the card, e.g. "Startup ecosystem". */
   category?: string;
   icon?: EcosystemIconKey;
+  /** The development dimensions the initiative contributes to, shown as tags on its card. */
+  dimensions?: DevelopmentDimension[];
   /** Defaults to `initiative`. At most one site, SaSarjan, is the `framework`. */
   role?: EcosystemRole;
   status: ContentStatus;
@@ -66,7 +74,7 @@ export interface EcosystemMessaging {
     mission: string;
     /** "CoCreating the Future, Together." */
     approach: string;
-    /** "Learn. Earn. Lead. Inspire. CoCreate." */
+    /** "Learn. Earn. Lead. Contribute. CoCreate." */
     participation: string;
   };
   /**
@@ -109,6 +117,13 @@ export interface Cta extends LinkItem {
 export interface ContentItem {
   title: string;
   text?: string;
+  /**
+   * Marks the item as one of the four development dimensions. On `/ecosystem` the vision's items
+   * then get the dimension's icon and the initiatives that contribute to it.
+   */
+  dimension?: DevelopmentDimension;
+  /** Short form of `title`, e.g. for the dimension tags on the initiative cards. */
+  shortTitle?: string;
 }
 
 export interface ContentSection {
@@ -120,6 +135,8 @@ export interface ContentSection {
   items?: ContentItem[];
   /** Accessible name (or visible heading) of `items`. */
   itemsLabel?: string;
+  /** Short label in the page's table of contents. Sections without one are left out of it. */
+  navLabel?: string;
 }
 
 /** One tier of the systems diagram on `/ecosystem`. */
@@ -146,18 +163,62 @@ export interface SystemsSection {
   supporting: Array<{ siteId: SiteId; text: string }>;
   /** Heading of the supporting initiatives. Without it the list is labelled by the section title. */
   supportingTitle?: string;
+  navLabel?: string;
+}
+
+/**
+ * One audience on `/ecosystem`'s participation pathways: who they are, what they can do, the
+ * initiatives that fit, and an action that links to the site's CoCreator destination.
+ */
+export interface ParticipationPathway {
+  /** e.g. "Students and young professionals". */
+  audience: string;
+  /** One line on what they can explore or contribute. */
+  text: string;
+  /** The initiatives that fit, linked to their websites. */
+  siteIds: SiteId[];
+  /** Text of the link to `SiteConfig.cocreator`, e.g. "Join as a learner". Hidden when that is unset. */
+  action: string;
+  /**
+   * An `id` from `participationInterests`. Appended to the CoCreator link as `?interest=<id>`, so a
+   * join form can preselect it.
+   */
+  interest?: string;
+}
+
+/** A participation interest of the "Join the Ecosystem" form, e.g. `{ id: "mentor", label: "Mentor or Trainer" }`. */
+export interface ParticipationInterest {
+  id: string;
+  label: string;
+}
+
+/**
+ * An illustrative journey through the initiatives. Step text may name initiatives as `{siteId}`,
+ * e.g. `"… explores {incubator}."`; each is rendered as the initiative's name, linked to its card.
+ */
+export interface JourneySection {
+  id: string;
+  title: string;
+  paragraphs: string[];
+  /** Visible marker that the journey is an example, e.g. "Illustrative example". */
+  label: string;
+  steps: string[];
+  navLabel?: string;
 }
 
 export interface CoCreatorSection {
   id: string;
   title: string;
   paragraphs: string[];
-  audiencesHeading: string;
-  /** Who can take part. */
-  audiences: string[];
-  pathwaysHeading: string;
-  /** Ways to take part. */
-  pathways: string[];
+  /** One card per audience. When set, replaces the `audiences` and `pathways` lists. */
+  participationPathways?: ParticipationPathway[];
+  audiencesHeading?: string;
+  /** Who can take part (0.2 layout, without `participationPathways`). */
+  audiences?: string[];
+  pathwaysHeading?: string;
+  /** Ways to take part (0.2 layout, without `participationPathways`). */
+  pathways?: string[];
+  navLabel?: string;
 }
 
 /** Title and description for the `/ecosystem` page's `<title>` and meta description. */
@@ -170,8 +231,9 @@ export interface IntroductionMetadata {
  * Copy for the `/ecosystem` page. The required fields are the 0.1 shape and are enough to render
  * the page; the optional ones add the sections of the 0.2 page. In page order:
  *
- * 1. `hero` (with `lead` as its body) · 2. `vision` · 3. `cocreation` · 4. `initiatives` (cards
- * from the ecosystem directory) · 5. `systems` · 6. `participation` · 7. `cocreator` · 8. `closing`
+ * 1. `hero` (with `lead` as its body) · 2. `vision` · 3. `initiatives` (cards from the ecosystem
+ * directory) · 4. `cocreation` · 5. `systems` · 6. `journey` (or `participation`) · 7. `cocreator`
+ * · 8. `closing`. Sections with a `navLabel` are listed in a table of contents under the hero.
  */
 export interface IntroductionContent {
   status: ContentStatus;
@@ -184,12 +246,19 @@ export interface IntroductionContent {
   cocreation: ContentSection;
   initiatives: ContentSection;
   hero?: {
+    /** `{nativeName}` is replaced by SaSarjan's native name, marked up with its `lang`. */
     eyebrow: string;
-    subline: string;
-    /** The hero's prominent line. */
+    subline?: string;
+    /** The hero's prominent line: the page's `<h1>`. */
     headline: string;
+    /** A line after `lead`, e.g. "Learn. Earn. Lead. Contribute. CoCreate." */
+    supportingLine?: string;
   };
+  /** One line per initiative on who it serves, shown on its card in place of `positioning`. */
+  initiativeAudiences?: Partial<Record<SiteId, string>>;
   systems?: SystemsSection;
+  /** Illustrative journey. Shown in place of `participation` when both are set. */
+  journey?: JourneySection;
   participation?: ContentSection;
   cocreator?: CoCreatorSection;
   /** Closing lines at the end of the page. */
@@ -241,6 +310,16 @@ export interface Labels {
   frameworkBadge?: string;
   /** Summary of an initiative card's collapsed focus areas. `{count}` is replaced. */
   moreFocusAreas?: string;
+  /** Accessible name of the page's table of contents. */
+  onThisPage?: string;
+  /** Accessible name of an initiative card's dimension tags. */
+  dimensionTags?: string;
+  /** Heading of the initiatives that contribute to a development dimension. */
+  contributingInitiatives?: string;
+  /** Shown for a dimension that no initiative besides the framework works on yet. */
+  noDedicatedInitiative?: string;
+  /** Heading of a participation pathway's initiative links. */
+  pathwayInitiatives?: string;
 }
 
 export type FooterVariant = "full" | "band";

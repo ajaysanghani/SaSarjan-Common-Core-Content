@@ -21,6 +21,7 @@ export {
   ecosystemMessagingSchema,
   labelsSchema,
   ecosystemIconKeys,
+  developmentDimensions,
   siteIds,
 } from "./config/schema";
 

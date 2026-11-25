@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { EcosystemIconKey } from "../config/types";
+import type { DevelopmentDimension, EcosystemIconKey } from "../config/types";
 import { cx } from "../lib/resolve";
 
 /**
@@ -68,6 +68,58 @@ export interface EcosystemIconProps {
 
 /** Decorative inline SVG icon of an initiative. Hidden from assistive technology. */
 export function EcosystemIcon({ icon, className }: EcosystemIconProps) {
+  return <LineIcon className={className}>{paths[icon]}</LineIcon>;
+}
+
+/** One icon per development dimension, in the same line-art style as the initiative icons. */
+const dimensionPaths: Record<DevelopmentDimension, ReactNode> = {
+  // Human potential: a person, growing.
+  human: (
+    <>
+      <circle cx="10" cy="7" r="3" />
+      <path d="M4 20c0-3.6 2.7-6.5 6-6.5s6 2.9 6 6.5" />
+      <path d="M18 10V4M15.5 6.5 18 4l2.5 2.5" />
+    </>
+  ),
+  // Organisation potential: a building.
+  organisation: (
+    <>
+      <path d="M3.5 20.5h17" />
+      <path d="M5.5 20.5v-15h9v15" />
+      <path d="M14.5 10h4v10.5" />
+      <path d="M8.5 9h3M8.5 12.5h3M8.5 16h3" />
+    </>
+  ),
+  // Community potential: people side by side.
+  community: (
+    <>
+      <circle cx="12" cy="7.5" r="2.5" />
+      <circle cx="5.5" cy="10" r="2" />
+      <circle cx="18.5" cy="10" r="2" />
+      <path d="M7.5 19.5c0-2.6 2-4.5 4.5-4.5s4.5 1.9 4.5 4.5" />
+      <path d="M2.5 18.5c0-2 1.3-3.6 3-4M21.5 18.5c0-2-1.3-3.6-3-4" />
+    </>
+  ),
+  // Nature regeneration: a leaf.
+  nature: (
+    <>
+      <path d="M5 19c0-8 5-13.5 14.5-14 .5 9.5-5 14.5-13 14.5Z" />
+      <path d="M4 20 13.5 10.5" />
+    </>
+  ),
+};
+
+export interface DimensionIconProps {
+  dimension: DevelopmentDimension;
+  className?: string;
+}
+
+/** Decorative inline SVG icon of a development dimension. Hidden from assistive technology. */
+export function DimensionIcon({ dimension, className }: DimensionIconProps) {
+  return <LineIcon className={className}>{dimensionPaths[dimension]}</LineIcon>;
+}
+
+function LineIcon({ className, children }: { className?: string; children: ReactNode }) {
   return (
     <svg
       className={cx("swc-icon", className)}
@@ -82,7 +134,7 @@ export function EcosystemIcon({ icon, className }: EcosystemIconProps) {
       aria-hidden="true"
       focusable="false"
     >
-      {paths[icon]}
+      {children}
     </svg>
   );
 }

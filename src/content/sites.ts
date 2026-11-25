@@ -8,7 +8,9 @@ import type { EcosystemSite } from "../config/types";
  *
  * Headline, positioning, focus areas and category come from the v0.2 content brief. `description`
  * is the first sentence of `positioning`, so sites on the 0.1 layout show the new wording.
- * Categories are the ones proposed in brief decision D5, now approved.
+ * Categories are the ones proposed in brief decision D5, now approved. `dimensions` maps each
+ * initiative to the development dimensions it contributes to (decided 2026-11-25); SaSarjan, the
+ * framework, spans all four, and Nature Regeneration has no dedicated initiative yet.
  */
 export const ecosystemSites: readonly EcosystemSite[] = [
   {
@@ -34,6 +36,7 @@ export const ecosystemSites: readonly EcosystemSite[] = [
     ],
     category: "CoCreation framework · Systems redesign",
     icon: "framework",
+    dimensions: ["human", "organisation", "community", "nature"],
     role: "framework",
     status: "approved",
   },
@@ -60,6 +63,7 @@ export const ecosystemSites: readonly EcosystemSite[] = [
     ],
     category: "Learning and opportunities",
     icon: "talent",
+    dimensions: ["human"],
     role: "initiative",
     status: "approved",
   },
@@ -86,6 +90,7 @@ export const ecosystemSites: readonly EcosystemSite[] = [
     ],
     category: "Organisational growth",
     icon: "growth",
+    dimensions: ["organisation"],
     role: "initiative",
     status: "approved",
   },
@@ -116,6 +121,7 @@ export const ecosystemSites: readonly EcosystemSite[] = [
     ],
     category: "Community development",
     icon: "community",
+    dimensions: ["community"],
     role: "initiative",
     status: "approved",
   },
@@ -141,6 +147,7 @@ export const ecosystemSites: readonly EcosystemSite[] = [
     ],
     category: "Lifelong learning",
     icon: "learning",
+    dimensions: ["human"],
     role: "initiative",
     status: "approved",
   },
@@ -168,6 +175,7 @@ export const ecosystemSites: readonly EcosystemSite[] = [
     ],
     category: "Startup ecosystem",
     icon: "startup",
+    dimensions: ["organisation"],
     role: "initiative",
     status: "approved",
   },
@@ -194,6 +202,7 @@ export const ecosystemSites: readonly EcosystemSite[] = [
     ],
     category: "Child development",
     icon: "children",
+    dimensions: ["human"],
     role: "initiative",
     status: "approved",
   },

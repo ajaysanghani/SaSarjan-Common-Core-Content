@@ -125,6 +125,8 @@ have no `status`; every visible interface string, including the 0.2 ones, can be
 - The footer's CoCreator block is a plain `<div>` with an `<h2>`, not a `<section>`, so `full` has exactly
   one landmark of its own (contentinfo) and `band` one (region), plus labelled `<nav>`s.
 - `IntroductionPage` and `SharedPageLayout` render one `<h1>`, and each section is labelled by its `<h2>`.
+  A labelled "On this page" `<nav>` lists the sections. The illustrative journey is an ordered list
+  named by its visible "Illustrative example" label; its step numbers are CSS counters.
   The `/ecosystem` systems diagram is built from headings and ordered lists (National → State →
   District, Village → Ward → Taluka → Block), so it reads in order without its visual layout. Its arrows
   and the cards' disclosure chevrons are CSS borders, not text, so nothing extra is read aloud.

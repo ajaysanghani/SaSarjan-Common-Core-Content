@@ -17,6 +17,7 @@ import {
   ecosystemSites,
   footerContent,
   introductionContent,
+  participationInterests,
 } from "../src";
 import type { EcosystemSite, FooterContent, IntroductionContent, Labels, SiteConfig } from "../src";
 import { resolveLabels, resolveSites } from "../src/lib/resolve";
@@ -124,12 +125,10 @@ describe("messaging hierarchy", () => {
   it("is referenced, not repeated, by the footer and page content", () => {
     const { hierarchy, introduction, closingLine } = ecosystemMessaging;
     expect(footerContent.closing).toEqual([closingLine, introduction.summary]);
-    expect(introductionContent.hero).toEqual({
-      eyebrow: hierarchy.approach,
-      subline: hierarchy.mission,
-      headline: hierarchy.participation,
-    });
-    expect(introductionContent.lead).toEqual([introduction.body, introduction.summary]);
+    expect(introductionContent.hero?.supportingLine).toBe(hierarchy.participation);
+    expect(hierarchy.participation).toBe("Learn. Earn. Lead. Contribute. CoCreate.");
+    expect(introductionContent.lead).toHaveLength(1);
+    expect(introduction.body).toBeTruthy();
     expect(introductionContent.closing?.lines).toEqual([hierarchy.approach, hierarchy.mission, closingLine]);
     expect(footerContent.brand).toEqual({ name: "SaSarjan", nativeName: "स सर्जन", nativeNameLang: "hi" });
   });
@@ -143,13 +142,13 @@ describe("messaging hierarchy", () => {
 describe("introduction content", () => {
   it("has all eight sections, with unique swc- ids", () => {
     const c = introductionContent;
-    expect(c.hero && c.systems && c.participation && c.cocreator && c.closing).toBeTruthy();
+    expect(c.hero && c.systems && c.journey && c.cocreator && c.closing).toBeTruthy();
     const ids = [
       c.vision.id,
       c.cocreation.id,
       c.initiatives.id,
       c.systems?.id,
-      c.participation?.id,
+      c.journey?.id,
       c.cocreator?.id,
       c.closing?.id,
     ];
@@ -165,18 +164,27 @@ describe("introduction content", () => {
   it("has the brief's lists", () => {
     expect(introductionContent.vision.items).toHaveLength(4);
     expect(introductionContent.cocreation.items).toHaveLength(8);
-    expect(introductionContent.participation?.items?.map((i) => i.title)).toEqual([
-      "Learn",
-      "Earn",
-      "Lead",
-      "Inspire",
-      "CoCreate",
+    expect(introductionContent.vision.items?.map((i) => i.dimension)).toEqual([
+      "human",
+      "organisation",
+      "community",
+      "nature",
     ]);
+    expect(introductionContent.journey?.steps).toHaveLength(6);
+    expect(introductionContent.cocreator?.participationPathways).toHaveLength(8);
     expect(introductionContent.systems?.topDown.levels).toEqual(["National", "State", "District"]);
     expect(introductionContent.systems?.bottomUp.levels).toEqual(["Village", "Ward", "Taluka", "Block"]);
     expect(introductionContent.systems?.supporting.map((s) => s.siteId).sort()).toEqual(
       ["10xgrowth", "incubator", "itvidya", "nanhasitara", "talentexcel"].sort(),
     );
+  });
+
+  it("points every pathway at a join-form interest", () => {
+    const ids = participationInterests.map((i) => i.id);
+    expect(participationInterests.map((i) => i.label)).toHaveLength(9);
+    for (const pathway of introductionContent.cocreator!.participationPathways!) {
+      expect(ids).toContain(pathway.interest);
+    }
   });
 
   it("still accepts content in the 0.1 shape", () => {
@@ -193,9 +201,13 @@ describe("introduction content", () => {
   });
 
   it.each([
-    ["an invalid section id", { participation: { ...introductionContent.participation, id: "Bad Id" } }],
+    ["an invalid section id", { journey: { ...introductionContent.journey, id: "Bad Id" } }],
     ["empty items", { vision: { ...introductionContent.vision, items: [] } }],
-    ["empty audiences", { cocreator: { ...introductionContent.cocreator, audiences: [] } }],
+    ["empty pathways", { cocreator: { ...introductionContent.cocreator, participationPathways: [] } }],
+    [
+      "an unknown initiative in a journey step",
+      { journey: { ...introductionContent.journey, steps: ["Joins {premi}.", "Then more."] } },
+    ],
     [
       "a one-level tier",
       {

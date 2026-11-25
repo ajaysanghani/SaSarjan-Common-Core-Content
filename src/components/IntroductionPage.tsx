@@ -3,8 +3,10 @@ import type {
   ContentSection,
   CoCreatorSection,
   Cta,
+  DevelopmentDimension,
   EcosystemSite,
   IntroductionContent,
+  JourneySection,
   Labels,
   LinkComponent,
   SiteConfig,
@@ -13,8 +15,9 @@ import type {
   SystemsTier,
 } from "../config/types";
 import { introductionContent } from "../content/introduction";
+import { ecosystemSites } from "../content/sites";
 import { cx, formatTemplate, resolveLabels, resolveSites } from "../lib/resolve";
-import { EcosystemIcon } from "./EcosystemIcon";
+import { DimensionIcon, EcosystemIcon } from "./EcosystemIcon";
 import { EcosystemLinks } from "./EcosystemLinks";
 import { SafeLink } from "./SafeLink";
 import { CtaRow, SharedPageLayout, type PageSection } from "./SharedPageLayout";
@@ -29,8 +32,8 @@ export interface IntroductionPageProps {
    */
   content?: IntroductionContent;
   /**
-   * Site-specific content. In the eight-section page it follows "Become a CoCreator", before the
-   * closing lines, together with the site's CTAs; in the 0.1 layout it follows the directory.
+   * Site-specific content. In the eight-section page it follows the participation pathways, before
+   * the closing lines, together with the site's CTAs; in the 0.1 layout it follows the directory.
    */
   children?: ReactNode;
   linkComponent?: LinkComponent;
@@ -39,8 +42,13 @@ export interface IntroductionPageProps {
 }
 
 /** Focus-area lists longer than this show their first `FOCUS_VISIBLE` items and collapse the rest. */
-const FOCUS_COLLAPSE_AFTER = 5;
-const FOCUS_VISIBLE = 4;
+const FOCUS_COLLAPSE_AFTER = 3;
+const FOCUS_VISIBLE = 3;
+
+/** DOM id of an initiative's card, the target of the page's in-page initiative links. */
+const cardId = (id: SiteId) => `swc-initiative-${id}`;
+
+type NavSection = PageSection & { navLabel?: string };
 
 /** The body of the shared `/ecosystem` page. Renders the page's `<h1>`. */
 export function IntroductionPage({
@@ -68,8 +76,10 @@ export function IntroductionPage({
   }
 
   const labels = resolveLabels(site);
-  const { hero, vision, cocreation, initiatives, systems, participation, cocreator, closing } = content;
+  const { hero, vision, cocreation, initiatives, systems, journey, participation, cocreator, closing } =
+    content;
   const sites = resolveSites({ overrides: site.ecosystem?.overrides });
+  const openInNewTab = site.ecosystem?.openInNewTab ?? false;
   const cocreatorCta: Cta | undefined = site.cocreator
     ? {
         href: site.cocreator.href,
@@ -81,22 +91,47 @@ export function IntroductionPage({
     { href: `#${initiatives.id}`, label: labels.exploreInitiatives, variant: "primary" },
     ...(cocreatorCta ? [cocreatorCta] : []),
   ];
+  const hasDimensions = (vision.items ?? []).some((item) => item.dimension);
 
-  const sections: PageSection[] = [
+  const sections: NavSection[] = [
     {
       id: vision.id,
       title: vision.title,
+      navLabel: vision.navLabel,
       className: "swc-intro__vision",
       body: (
         <>
           <Paragraphs paragraphs={vision.paragraphs} />
-          <ItemGrid section={vision} variant="dimensions" />
+          {hasDimensions ? (
+            <Dimensions section={vision} sites={sites} labels={labels} />
+          ) : (
+            <ItemGrid section={vision} variant="dimensions" />
+          )}
+        </>
+      ),
+    },
+    {
+      id: initiatives.id,
+      title: initiatives.title,
+      navLabel: initiatives.navLabel,
+      className: "swc-intro__initiatives",
+      body: (
+        <>
+          <Paragraphs paragraphs={initiatives.paragraphs} />
+          <InitiativeCards
+            site={site}
+            sites={sites}
+            labels={labels}
+            audiences={content.initiativeAudiences}
+            dimensionNames={dimensionNames(vision)}
+          />
         </>
       ),
     },
     {
       id: cocreation.id,
       title: cocreation.title,
+      navLabel: cocreation.navLabel,
       className: "swc-intro__cocreation",
       body: (
         <>
@@ -105,22 +140,12 @@ export function IntroductionPage({
         </>
       ),
     },
-    {
-      id: initiatives.id,
-      title: initiatives.title,
-      className: "swc-intro__initiatives",
-      body: (
-        <>
-          <Paragraphs paragraphs={initiatives.paragraphs} />
-          <InitiativeCards site={site} sites={sites} labels={labels} />
-        </>
-      ),
-    },
   ];
   if (systems) {
     sections.push({
       id: systems.id,
       title: systems.title,
+      navLabel: systems.navLabel,
       className: "swc-intro__systems",
       body: (
         <>
@@ -130,10 +155,19 @@ export function IntroductionPage({
       ),
     });
   }
-  if (participation) {
+  if (journey) {
+    sections.push({
+      id: journey.id,
+      title: journey.title,
+      navLabel: journey.navLabel,
+      className: "swc-intro__journey",
+      body: <Journey journey={journey} sites={sites} />,
+    });
+  } else if (participation) {
     sections.push({
       id: participation.id,
       title: participation.title,
+      navLabel: participation.navLabel,
       className: "swc-intro__participation",
       body: (
         <>
@@ -147,18 +181,37 @@ export function IntroductionPage({
     sections.push({
       id: cocreator.id,
       title: cocreator.title,
+      navLabel: cocreator.navLabel,
       className: "swc-intro__cocreator",
-      body: <CoCreator section={cocreator} cta={cocreatorCta} linkComponent={linkComponent} />,
+      body: (
+        <CoCreator
+          section={cocreator}
+          cta={cocreatorCta}
+          sites={sites}
+          labels={labels}
+          currentSiteId={site.siteId}
+          openInNewTab={openInNewTab}
+          linkComponent={linkComponent}
+        />
+      ),
     });
   }
 
   return (
     <SharedPageLayout
       title={hero.headline}
-      eyebrow={hero.eyebrow}
+      eyebrow={<HeroEyebrow template={hero.eyebrow} />}
       subline={hero.subline}
-      intro={content.lead}
+      intro={
+        <>
+          {content.lead.map((paragraph, i) => (
+            <p key={i}>{paragraph}</p>
+          ))}
+          {hero.supportingLine ? <p className="swc-page__supporting">{hero.supportingLine}</p> : null}
+        </>
+      }
       headerCtas={heroCtas}
+      nav={<TableOfContents sections={sections} label={labels.onThisPage} />}
       sections={sections}
       linkComponent={linkComponent}
       as={as}
@@ -227,6 +280,39 @@ function ClassicPage({
   );
 }
 
+/** The hero eyebrow, with `{nativeName}` as SaSarjan's native name in its own `lang`. */
+function HeroEyebrow({ template }: { template: string }) {
+  const framework = ecosystemSites.find((s) => s.role === "framework");
+  const [before, ...rest] = template.split("{nativeName}");
+  if (rest.length === 0) return <>{template}</>;
+  return (
+    <>
+      {before}
+      <span lang={framework?.nativeNameLang}>{framework?.nativeName ?? framework?.name}</span>
+      {rest.join("{nativeName}")}
+    </>
+  );
+}
+
+/** In-page links to the sections that have a `navLabel`. */
+function TableOfContents({ sections, label }: { sections: NavSection[]; label: string }) {
+  const entries = sections.filter((section) => section.navLabel);
+  if (entries.length === 0) return null;
+  return (
+    <nav className="swc-toc" aria-label={label}>
+      <ol className="swc-toc__list">
+        {entries.map((section) => (
+          <li key={section.id} className="swc-toc__item">
+            <a href={`#${section.id}`} className="swc-toc__link">
+              {section.navLabel}
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  );
+}
+
 function Paragraphs({ paragraphs }: { paragraphs: string[] }) {
   return (
     <>
@@ -263,15 +349,100 @@ function ItemGrid({ section, variant }: { section: ContentSection; variant: "dim
   );
 }
 
+/** Short names of the dimensions, for the tags on the initiative cards. */
+function dimensionNames(vision: ContentSection): Partial<Record<DevelopmentDimension, string>> {
+  return Object.fromEntries(
+    (vision.items ?? [])
+      .filter((item) => item.dimension)
+      .map((item) => [item.dimension, item.shortTitle ?? item.title]),
+  );
+}
+
+/** Contributing initiatives first, then the framework, which spans every dimension. */
+function contributorsOf(dimension: DevelopmentDimension, sites: EcosystemSite[]): EcosystemSite[] {
+  const contributing = sites.filter((s) => s.dimensions?.includes(dimension));
+  return [
+    ...contributing.filter((s) => s.role !== "framework"),
+    ...contributing.filter((s) => s.role === "framework"),
+  ];
+}
+
+/** The four development dimensions, each with its icon and the initiatives that contribute to it. */
+function Dimensions({
+  section,
+  sites,
+  labels,
+}: {
+  section: ContentSection;
+  sites: EcosystemSite[];
+  labels: Required<Labels>;
+}) {
+  const items = section.items ?? [];
+  const labelId = `${section.id}-items`;
+  return (
+    <div className="swc-intro__items swc-intro__items--dimensions">
+      {section.itemsLabel ? (
+        <p id={labelId} className="swc-intro__label">
+          {section.itemsLabel}
+        </p>
+      ) : null}
+      <ul className="swc-dims" aria-labelledby={section.itemsLabel ? labelId : undefined}>
+        {items.map((item) => {
+          const dimension = item.dimension;
+          const contributors = dimension ? contributorsOf(dimension, sites) : [];
+          const dedicated = contributors.some((s) => s.role !== "framework");
+          const sitesId = `${section.id}-${dimension ?? "item"}-sites`;
+          return (
+            <li key={item.title} className="swc-dim">
+              <div className="swc-dim__head">
+                {dimension ? (
+                  <span className="swc-dim__icon">
+                    <DimensionIcon dimension={dimension} />
+                  </span>
+                ) : null}
+                <h3 className="swc-dim__title">{item.title}</h3>
+              </div>
+              {item.text ? <p className="swc-dim__text">{item.text}</p> : null}
+              {dimension ? (
+                <div className="swc-dim__sites">
+                  <p id={sitesId} className="swc-dim__sites-label">
+                    {labels.contributingInitiatives}
+                  </p>
+                  {contributors.length > 0 ? (
+                    <ul className="swc-dim__links" aria-labelledby={sitesId}>
+                      {contributors.map((s) => (
+                        <li key={s.id} className="swc-dim__link-item">
+                          <a href={`#${cardId(s.id)}`} className="swc-dim__link">
+                            {s.name}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                  {dedicated ? null : <p className="swc-dim__none">{labels.noDedicatedInitiative}</p>}
+                </div>
+              ) : null}
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+
 /** The seven initiative cards. SaSarjan, the framework, gets a wide card of its own. */
 function InitiativeCards({
   site,
   sites,
   labels,
+  audiences,
+  dimensionNames,
 }: {
   site: SiteConfig;
   sites: EcosystemSite[];
   labels: Required<Labels>;
+  audiences?: Partial<Record<SiteId, string>>;
+  dimensionNames: Partial<Record<DevelopmentDimension, string>>;
 }) {
   const openInNewTab = site.ecosystem?.openInNewTab ?? false;
   return (
@@ -283,9 +454,11 @@ function InitiativeCards({
         const collapse = focus.length > FOCUS_COLLAPSE_AFTER;
         const shown = collapse ? focus.slice(0, FOCUS_VISIBLE) : focus;
         const hidden = collapse ? focus.slice(FOCUS_VISIBLE) : [];
+        const tags = (item.dimensions ?? []).flatMap((d) => (dimensionNames[d] ? [dimensionNames[d]] : []));
         return (
           <li
             key={item.id}
+            id={cardId(item.id)}
             className={cx(
               "swc-intro__card",
               isFramework && "swc-intro__card--framework",
@@ -299,7 +472,19 @@ function InitiativeCards({
                 </span>
               ) : null}
               <div className="swc-intro__card-meta">
-                {item.category ? <p className="swc-intro__card-category">{item.category}</p> : null}
+                <h3 className="swc-intro__card-name">
+                  {item.name}
+                  {item.nativeName ? (
+                    <>
+                      <span className="swc-intro__card-sep" aria-hidden="true">
+                        {" · "}
+                      </span>
+                      <span className="swc-intro__card-native" lang={item.nativeNameLang}>
+                        {item.nativeName}
+                      </span>
+                    </>
+                  ) : null}
+                </h3>
                 {isFramework || isCurrent ? (
                   <p className="swc-intro__badges">
                     {isFramework ? (
@@ -315,21 +500,19 @@ function InitiativeCards({
               </div>
             </div>
             <div className="swc-intro__card-main">
-              <h3 className="swc-intro__card-name">
-                {item.name}
-                {item.nativeName ? (
-                  <>
-                    <span className="swc-intro__card-sep" aria-hidden="true">
-                      {" · "}
-                    </span>
-                    <span className="swc-intro__card-native" lang={item.nativeNameLang}>
-                      {item.nativeName}
-                    </span>
-                  </>
-                ) : null}
-              </h3>
               {item.headline ? <p className="swc-intro__card-headline">{item.headline}</p> : null}
-              <p className="swc-intro__card-text">{item.positioning ?? item.description}</p>
+              <p className="swc-intro__card-text">
+                {audiences?.[item.id] ?? item.positioning ?? item.description}
+              </p>
+              {tags.length > 0 ? (
+                <ul className="swc-intro__tags" aria-label={labels.dimensionTags}>
+                  {tags.map((tag) => (
+                    <li key={tag} className="swc-intro__tag">
+                      {tag}
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
             </div>
             {focus.length > 0 ? (
               <div className="swc-intro__card-focus">
@@ -477,6 +660,46 @@ function Tier({
   );
 }
 
+/** A journey step, with each `{siteId}` as the initiative's name linked to its card. */
+function JourneyStep({ step, sites }: { step: string; sites: EcosystemSite[] }) {
+  const parts = step.split(/\{(\w+)\}/);
+  return (
+    <>
+      {parts.map((part, i) => {
+        if (i % 2 === 0) return part;
+        const match = sites.find((s) => s.id === part);
+        return match ? (
+          <a key={i} href={`#${cardId(match.id)}`} className="swc-journey__site">
+            {match.name}
+          </a>
+        ) : (
+          part
+        );
+      })}
+    </>
+  );
+}
+
+/** The illustrative journey: an ordered list under a visible "illustrative" label. */
+function Journey({ journey, sites }: { journey: JourneySection; sites: EcosystemSite[] }) {
+  const labelId = `${journey.id}-label`;
+  return (
+    <div className="swc-journey">
+      <p id={labelId} className="swc-journey__label">
+        {journey.label}
+      </p>
+      <Paragraphs paragraphs={journey.paragraphs} />
+      <ol className="swc-journey__steps" aria-labelledby={labelId}>
+        {journey.steps.map((step, i) => (
+          <li key={i} className="swc-journey__step">
+            <JourneyStep step={step} sites={sites} />
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}
+
 /** Interconnected pathways around their shared line: a ring, not a sequence. */
 function Pathways({ section }: { section: ContentSection }) {
   const items = section.items ?? [];
@@ -501,40 +724,108 @@ function Pathways({ section }: { section: ContentSection }) {
   );
 }
 
+/** Adds `interest=<id>` to a CoCreator link, so a join form can preselect it. */
+function withInterest(href: string, interest?: string): string {
+  if (!interest || /^(#|mailto:|tel:)/i.test(href)) return href;
+  const hashAt = href.indexOf("#");
+  const base = hashAt === -1 ? href : href.slice(0, hashAt);
+  const hash = hashAt === -1 ? "" : href.slice(hashAt);
+  return `${base}${base.includes("?") ? "&" : "?"}interest=${encodeURIComponent(interest)}${hash}`;
+}
+
 function CoCreator({
   section,
   cta,
+  sites,
+  labels,
+  currentSiteId,
+  openInNewTab,
   linkComponent,
 }: {
   section: CoCreatorSection;
   cta?: Cta;
+  sites: EcosystemSite[];
+  labels: Required<Labels>;
+  currentSiteId: SiteId;
+  openInNewTab: boolean;
   linkComponent?: LinkComponent;
 }) {
+  const pathways = section.participationPathways ?? [];
   return (
     <div className="swc-intro__join">
       <Paragraphs paragraphs={section.paragraphs} />
-      <div className="swc-intro__join-grid">
-        <div className="swc-intro__join-group">
-          <h3 className="swc-intro__join-heading">{section.audiencesHeading}</h3>
-          <ul className="swc-intro__chips">
-            {section.audiences.map((audience) => (
-              <li key={audience} className="swc-intro__chip">
-                {audience}
+      {pathways.length > 0 ? (
+        <ul className="swc-ways">
+          {pathways.map((pathway, i) => {
+            const linked = pathway.siteIds.flatMap((id) => sites.filter((s) => s.id === id));
+            const sitesId = `${section.id}-way-${i}`;
+            return (
+              <li key={pathway.audience} className="swc-ways__item">
+                <h3 className="swc-ways__title">{pathway.audience}</h3>
+                <p className="swc-ways__text">{pathway.text}</p>
+                {linked.length > 0 ? (
+                  <div className="swc-ways__sites">
+                    <span id={sitesId} className="swc-ways__sites-label">
+                      {labels.pathwayInitiatives}
+                    </span>
+                    <ul className="swc-ways__links" aria-labelledby={sitesId}>
+                      {linked.map((s) => (
+                        <li key={s.id} className="swc-ways__link-item">
+                          <SafeLink
+                            href={s.url}
+                            className="swc-ways__link"
+                            newTab={openInNewTab && s.id !== currentSiteId}
+                            newTabLabel={labels.opensInNewTab}
+                            ariaCurrent={s.id === currentSiteId ? "true" : undefined}
+                          >
+                            {s.name}
+                          </SafeLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
+                {cta ? (
+                  <SafeLink
+                    href={withInterest(cta.href, pathway.interest)}
+                    linkComponent={linkComponent}
+                    className="swc-ways__action"
+                  >
+                    {pathway.action}
+                  </SafeLink>
+                ) : null}
               </li>
-            ))}
-          </ul>
+            );
+          })}
+        </ul>
+      ) : section.audiences && section.pathways ? (
+        <div className="swc-intro__join-grid">
+          <div className="swc-intro__join-group">
+            {section.audiencesHeading ? (
+              <h3 className="swc-intro__join-heading">{section.audiencesHeading}</h3>
+            ) : null}
+            <ul className="swc-intro__chips">
+              {section.audiences.map((audience) => (
+                <li key={audience} className="swc-intro__chip">
+                  {audience}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="swc-intro__join-group">
+            {section.pathwaysHeading ? (
+              <h3 className="swc-intro__join-heading">{section.pathwaysHeading}</h3>
+            ) : null}
+            <ul className="swc-intro__checklist">
+              {section.pathways.map((pathway) => (
+                <li key={pathway} className="swc-intro__check">
+                  {pathway}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
-        <div className="swc-intro__join-group">
-          <h3 className="swc-intro__join-heading">{section.pathwaysHeading}</h3>
-          <ul className="swc-intro__checklist">
-            {section.pathways.map((pathway) => (
-              <li key={pathway} className="swc-intro__check">
-                {pathway}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
+      ) : null}
       {cta ? (
         <SafeLink href={cta.href} linkComponent={linkComponent} className="swc-btn swc-btn--primary">
           {cta.label}

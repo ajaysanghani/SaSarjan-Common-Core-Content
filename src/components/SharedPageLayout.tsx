@@ -15,12 +15,14 @@ export interface PageSection {
 
 export interface SharedPageLayoutProps {
   title: string;
-  eyebrow?: string;
+  eyebrow?: ReactNode;
   /** A line between the eyebrow and the title. */
   subline?: string;
   intro?: string[] | ReactNode;
   /** Calls to action at the end of the header, e.g. a hero's buttons. */
   headerCtas?: Cta[];
+  /** Rendered between the header and the first section, e.g. a table of contents. */
+  nav?: ReactNode;
   sections?: PageSection[];
   /** Calls to action at the end of the page. */
   ctas?: Cta[];
@@ -42,6 +44,7 @@ export function SharedPageLayout({
   subline,
   intro,
   headerCtas = [],
+  nav,
   sections = [],
   ctas = [],
   children,
@@ -58,6 +61,8 @@ export function SharedPageLayout({
         {intro ? <div className="swc-page__intro">{renderBody(intro)}</div> : null}
         {headerCtas.length > 0 ? <CtaRow ctas={headerCtas} linkComponent={linkComponent} /> : null}
       </header>
+
+      {nav}
 
       {sections.map((section) => (
         <section
