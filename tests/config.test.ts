@@ -120,9 +120,9 @@ describe("shared content", () => {
     expect(ecosystemSitesSchema.safeParse(broken).success).toBe(false);
   });
 
-  it("reports no draft content once everything is approved", () => {
-    // Approved by the content owner on 2026-11-24; see docs/CONTENT-GOVERNANCE.md. A wording change
-    // goes back to draft, and this test then fails until it is approved again.
-    expect(findDraftContent()).toEqual([]);
+  it("reports only the v0.3 /ecosystem copy as draft", () => {
+    // Everything else was approved on 2026-11-24; see docs/CONTENT-GOVERNANCE.md. The v0.3 page copy
+    // waits for the owner's sign-off. Once approved, this expects an empty list again.
+    expect(findDraftContent().map((d) => d.path)).toEqual(["introductionContent"]);
   });
 });

@@ -142,25 +142,33 @@ export default function EcosystemPage() {
 }
 ```
 
-The page has eight sections, in this order: the hero (the page's only `<h1>`, the common
-introduction, "Explore Our Initiatives" and "Become a CoCreator"), the vision, the CoCreation
-approach, the seven initiative cards, the top-down/bottom-up systems diagram, the participation
-pathways, "Become a CoCreator", and the closing lines. Every section is labelled by its `<h2>`, and
-every id is `swc-` prefixed (`#swc-initiatives` is the initiatives section).
+The page has eight parts, in this order: the hero (the page's only `<h1>`, what SaSarjan means,
+the description, "Learn. Earn. Lead. Contribute. CoCreate.", "Explore Our Ecosystem" and "Become a
+CoCreator") with an "On this page" table of contents; the vision with the four development dimensions
+and the initiatives contributing to each; the seven initiative cards; the CoCreation approach; the
+top-down/bottom-up systems diagram; an illustrative journey; the participation pathways; and the
+closing lines. Every section is labelled by its `<h2>`, and every id is `swc-` prefixed
+(`#swc-initiatives` is the initiatives section, `#swc-initiative-talentexcel` a card).
 
-- **Become a CoCreator** links to `cocreator` from your site config, in the hero and in section 7.
-  With no `cocreator` set, both buttons are hidden; the section's text still shows.
+- **Become a CoCreator** links to `cocreator` from your site config, in the hero and at the end of
+  the pathways. Each pathway's action ("Join as a volunteer", …) links there too, with
+  `?interest=<id>` added (ids from `participationInterests`), so a join form can preselect it. With no
+  `cocreator` set, all of these are hidden; the pathways still show their initiative links.
 - **Your CTAs** (`introduction.ctas`, or the `ctas` prop) and **your `children`** render together
-  after "Become a CoCreator", before the closing lines.
+  after the pathways, before the closing lines.
 - **The initiative cards** always list all seven initiatives and mark yours "You are here".
-  `ecosystem.overrides` and `ecosystem.openInNewTab` apply to them. Long focus-area lists show four
-  items and collapse the rest into a native `<details>`, so no JavaScript is needed.
+  `ecosystem.overrides` and `ecosystem.openInNewTab` apply to them. Each shows its headline, one line
+  on who it serves (`content.initiativeAudiences`), its dimension tags (`EcosystemSite.dimensions`)
+  and three focus areas; the rest collapse into a native `<details>`, so no JavaScript is needed.
 - **Translated content in the 0.1 shape.** If you pass `content` without `hero`, the page renders
-  the 0.1 layout (title, three sections, directory grid, your CTAs) exactly as before.
+  the 0.1 layout (title, three sections, directory grid, your CTAs) exactly as before. Content in the
+  0.2 shape still renders; sections without a `navLabel` are left out of the table of contents.
 - **Tagline.** Pair the page with `<SharedFooter condensed />` (see above): the tagline pair then
-  appears twice on the page, in the hero and the closing lines, and not in the footer.
-- **Sticky header?** Set `--swc-scroll-margin` to its height, so "Explore Our Initiatives" doesn't
-  scroll the section heading under it.
+  appears once on the page, in the closing lines, and not in the footer.
+- **Sticky header?** Set `--swc-scroll-margin` to its height plus a little room, so the table of
+  contents and "Explore Our Ecosystem" don't scroll a heading under it.
+- **A join form** can use `participationInterests` (`{ id, label }[]`, the nine interests) for its
+  options, so the pathway links and the form agree.
 
 `introductionContent.title` and `.lead[0]` still work as a metadata title and description if you
 already use them.
@@ -172,6 +180,7 @@ already use them.
 | `SharedFooter`     | `full` footer landmark or `band` ecosystem section                         |
 | `EcosystemLinks`   | `<nav>` of the seven sites: `grid`, `list`, `inline` or `directory` layout |
 | `EcosystemIcon`    | An initiative's decorative inline SVG icon (`icon` key from the directory) |
+| `DimensionIcon`    | A development dimension's decorative inline SVG icon (`dimension` key)     |
 | `IntroductionPage` | `/ecosystem` page body: the eight sections, your CTAs and your content     |
 | `SharedPageLayout` | Optional title, intro, sections and CTA scaffold                           |
 | `SafeLink`         | A link that renders only allowlisted hrefs                                 |

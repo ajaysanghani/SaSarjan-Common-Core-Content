@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { classifyHref, hostOf } from "../lib/url";
 import type {
+  DevelopmentDimension,
   EcosystemIconKey,
   EcosystemMessaging,
   EcosystemSite,
@@ -31,6 +32,13 @@ export const ecosystemIconKeys = [
   "children",
 ] as const satisfies readonly EcosystemIconKey[];
 
+export const developmentDimensions = [
+  "human",
+  "organisation",
+  "community",
+  "nature",
+] as const satisfies readonly DevelopmentDimension[];
+
 const text = z.string().trim().min(1);
 const sectionId = z.string().regex(/^[a-z][a-z0-9-]*$/, "Use lowercase letters, digits and hyphens");
 const langTag = z.string().regex(/^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$/, "Use a BCP 47 language tag such as hi");
@@ -48,15 +56,24 @@ const cta = z.strictObject({
   variant: z.enum(["primary", "secondary"]).optional(),
 });
 const status = z.enum(["approved", "draft"]);
+const dimension = z.enum(developmentDimensions);
 const section = z.strictObject({
   id: sectionId,
   title: text,
   paragraphs: z.array(text),
   items: z
-    .array(z.strictObject({ title: text, text: text.optional() }))
+    .array(
+      z.strictObject({
+        title: text,
+        text: text.optional(),
+        dimension: dimension.optional(),
+        shortTitle: text.max(40).optional(),
+      }),
+    )
     .min(1)
     .optional(),
   itemsLabel: text.optional(),
+  navLabel: text.max(30).optional(),
 });
 const systemsTier = z.strictObject({
   siteId: z.enum(siteIds),
@@ -73,15 +90,38 @@ const systemsSection = z.strictObject({
   connection: text,
   supporting: z.array(z.strictObject({ siteId: z.enum(siteIds), text })),
   supportingTitle: text.optional(),
+  navLabel: text.max(30).optional(),
+});
+/** Every `{placeholder}` in a journey step must name a site. */
+const journeyStep = text.refine(
+  (step) => [...step.matchAll(/\{(\w+)\}/g)].every(([, id]) => (siteIds as readonly string[]).includes(id!)),
+  "Name initiatives in a journey step as {siteId}, e.g. {incubator}",
+);
+const journeySection = z.strictObject({
+  id: sectionId,
+  title: text,
+  paragraphs: z.array(text),
+  label: text,
+  steps: z.array(journeyStep).min(2),
+  navLabel: text.max(30).optional(),
+});
+const participationPathway = z.strictObject({
+  audience: text,
+  text,
+  siteIds: z.array(z.enum(siteIds)).min(1),
+  action: text,
+  interest: sectionId.optional(),
 });
 const cocreatorSection = z.strictObject({
   id: sectionId,
   title: text,
   paragraphs: z.array(text),
-  audiencesHeading: text,
-  audiences: z.array(text).min(1),
-  pathwaysHeading: text,
-  pathways: z.array(text).min(1),
+  participationPathways: z.array(participationPathway).min(1).optional(),
+  audiencesHeading: text.optional(),
+  audiences: z.array(text).min(1).optional(),
+  pathwaysHeading: text.optional(),
+  pathways: z.array(text).min(1).optional(),
+  navLabel: text.max(30).optional(),
 });
 
 const labelsShape = {
@@ -100,6 +140,11 @@ const labelsShape = {
   focusAreas: text.optional(),
   frameworkBadge: text.optional(),
   moreFocusAreas: text.optional(),
+  onThisPage: text.optional(),
+  dimensionTags: text.optional(),
+  contributingInitiatives: text.optional(),
+  noDedicatedInitiative: text.optional(),
+  pathwayInitiatives: text.optional(),
 };
 
 export const labelsSchema: z.ZodType<Labels> = z.strictObject(labelsShape);
@@ -168,6 +213,11 @@ const ecosystemSiteSchema: z.ZodType<EcosystemSite> = z
     focusAreas: z.array(text.max(80)).min(1).max(16).optional(),
     category: text.max(60).optional(),
     icon: z.enum(ecosystemIconKeys).optional(),
+    dimensions: z
+      .array(dimension)
+      .min(1)
+      .refine((list) => new Set(list).size === list.length, "List each dimension once")
+      .optional(),
     role: z.enum(["framework", "initiative"]).optional(),
     status,
   })
@@ -204,8 +254,17 @@ export const introductionContentSchema: z.ZodType<IntroductionContent> = z.stric
   vision: section,
   cocreation: section,
   initiatives: section,
-  hero: z.strictObject({ eyebrow: text, subline: text, headline: text }).optional(),
+  hero: z
+    .strictObject({
+      eyebrow: text,
+      subline: text.optional(),
+      headline: text,
+      supportingLine: text.optional(),
+    })
+    .optional(),
+  initiativeAudiences: z.partialRecord(z.enum(siteIds), text.max(160)).optional(),
   systems: systemsSection.optional(),
+  journey: journeySection.optional(),
   participation: section.optional(),
   cocreator: cocreatorSection.optional(),
   closing: z.strictObject({ id: sectionId, lines: z.array(text).min(1) }).optional(),

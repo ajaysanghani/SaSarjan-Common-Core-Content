@@ -14,7 +14,8 @@ export const ecosystemMessaging: EcosystemMessaging = {
     vision: "Collective Prosperity.",
     mission: "Solve the Unsolved. Advance Collective Prosperity.",
     approach: "CoCreating the Future, Together.",
-    participation: "Learn. Earn. Lead. Inspire. CoCreate.",
+    // Updated 2026-11-25 from the owner's /ecosystem suggestions ("Inspire" became "Contribute").
+    participation: "Learn. Earn. Lead. Contribute. CoCreate.",
   },
   introduction: {
     body: "We unite youth, professionals, experts, entrepreneurs, institutions, communities, funders and AI to develop human potential, strengthen organisations, empower communities, redesign systems and regenerate nature.",
